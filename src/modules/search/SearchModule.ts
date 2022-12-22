@@ -825,7 +825,6 @@ export class SearchModule implements ReaderModule {
         this.delegate.currentResource() ?? 0
       ];
     }
-    localSearchResultBook = [...localSearchResultBook, tocItem];
     if (tocItem) {
       let href;
       if (chapterLink) {
@@ -836,6 +835,7 @@ export class SearchModule implements ReaderModule {
       }
       if (this.delegate.api?.getContent) {
         await this.delegate.api?.getContent(href).then((content) => {
+          localSearchResultBook = [...localSearchResultBook, content];
           this.searchContent(content, term, localSearchResultBook, tocItem);
         });
       } else {
