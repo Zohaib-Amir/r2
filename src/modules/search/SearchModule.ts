@@ -809,10 +809,11 @@ export class SearchModule implements ReaderModule {
   }
 
   async searchChapter(term: string, chapterLink?: string): Promise<any> {
-    let localSearchResultBook: any = ["iii"];
+    let localSearchResultBook: any = [];
     let linkHref;
     if (chapterLink) {
       linkHref = chapterLink;
+      localSearchResultBook = [...localSearchResultBook, chapterLink];
     } else {
       linkHref = this.publication.getAbsoluteHref(
         this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href

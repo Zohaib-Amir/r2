@@ -17,7 +17,7 @@
     "clean": "rimraf node_modules dist parcel-dist .parcel-cache",
     "dev": "ts-node -T build.ts -w",
     "build": "ts-node -T build.ts",
-    "publishPackage": "npm version patch && npm run build && npm publish",
+    "release": "git add . && git commit -m \"Release v$(jq -r '.version' package.json)\" && npm version patch && npm run build && npm publish",
     "sass:debug": "sass --source-map src/styles/sass/:dist",
     "sass:release": "sass --style=compressed src/styles/sass/:dist",
     "examples": "npx ts-node examples/server.ts",
