@@ -813,7 +813,6 @@ export class SearchModule implements ReaderModule {
     let linkHref;
     if (chapterLink) {
       linkHref = chapterLink;
-      localSearchResultBook = [...localSearchResultBook, chapterLink];
     } else {
       linkHref = this.publication.getAbsoluteHref(
         this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
@@ -821,6 +820,7 @@ export class SearchModule implements ReaderModule {
     }
 
     let tocItem = this.publication.getTOCItem(linkHref);
+    localSearchResultBook = [...localSearchResultBook, tocItem];
     if (tocItem === null) {
       tocItem = this.publication.readingOrder[
         this.delegate.currentResource() ?? 0
