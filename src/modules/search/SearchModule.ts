@@ -820,13 +820,12 @@ export class SearchModule implements ReaderModule {
     }
 
     let tocItem = this.publication.getTOCItem(linkHref);
-    localSearchResultBook = [...localSearchResultBook, tocItem];
-    if (tocItem === null) {
+    if (!tocItem) {
       tocItem = this.publication.readingOrder[
         this.delegate.currentResource() ?? 0
       ];
     }
-
+    localSearchResultBook = [...localSearchResultBook, tocItem];
     if (tocItem) {
       let href;
       if (chapterLink) {
