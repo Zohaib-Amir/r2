@@ -748,14 +748,12 @@ export class SearchModule implements ReaderModule {
         };
         if (this.delegate.api?.getContent) {
           await this.delegate.api?.getContent(href).then((content) => {
-            // this.searchContent(content, term, localSearchResultBook, tocItem);
-            return content;
+            this.searchContent(content, term, localSearchResultBook, tocItem);
           });
         } else {
           await fetch(href, this.delegate.requestConfig)
             .then((r) => r.text())
             .then((data) => {
-              return data;
               this.searchContent(data, term, localSearchResultBook, tocItem);
             });
         }
@@ -811,7 +809,7 @@ export class SearchModule implements ReaderModule {
   }
 
   async searchChapter(term: string, chapterLink?: string): Promise<any> {
-    let localSearchResultBook: any = [];
+    let localSearchResultBook: any = ["iii"];
     let linkHref;
     if (chapterLink) {
       linkHref = chapterLink;

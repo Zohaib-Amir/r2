@@ -1,6 +1,6 @@
 {
   "name": "r2z",
-  "version": "0.0.7",
+  "version": "0.0.11",
   "description": "A viewer application for EPUB files.",
   "repository": "https://github.com/Zohaib-Amir/r2",
   "license": "Apache-2.0",
@@ -17,6 +17,7 @@
     "clean": "rimraf node_modules dist parcel-dist .parcel-cache",
     "dev": "ts-node -T build.ts -w",
     "build": "ts-node -T build.ts",
+    "publish": "npm version patch && npm run build && npm publish",
     "sass:debug": "sass --source-map src/styles/sass/:dist",
     "sass:release": "sass --style=compressed src/styles/sass/:dist",
     "examples": "npx ts-node examples/server.ts",

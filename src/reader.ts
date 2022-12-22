@@ -535,13 +535,11 @@ export default class D2Reader {
     chapterLink?: string,
     allChapterLinks?: string[]
   ) => {
-    return (
-      (await this.searchModule?.search(
-        term,
-        current,
-        chapterLink,
-        allChapterLinks
-      )) ?? []
+    return await this.searchModule?.search(
+      term,
+      current,
+      chapterLink,
+      allChapterLinks
     );
   };
   goToSearchIndex = async (href: string, index: number, current: boolean) => {
