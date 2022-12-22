@@ -30,7 +30,7 @@ export interface ISearchResult {
   textBefore: string;
   textAfter: string;
   href: string;
-  title: string;
+  title?: string;
   uuid: string;
   highlight?: any;
 }
@@ -74,7 +74,7 @@ export async function searchDocDomSeek(
   searchInput: string,
   doc: Document | null,
   href: string,
-  title: string,
+  title?: string,
   fullWordSearch: boolean = false
 ): Promise<ISearchResult[]> {
   if (!doc) {
@@ -157,15 +157,16 @@ export async function searchDocDomSeek(
     const rangeInfo = convertRange(range, (doc as any).getCssSelector); // computeElementCFI
 
     if (rangeInfo) {
-      searchResults.push({
+      const res: ISearchResult = {
         textMatch: collapseWhitespaces(matches[0]),
         textBefore,
         textAfter,
         rangeInfo,
         href,
-        title,
         uuid: getCount().toString(),
-      });
+      };
+      if (title) res.title = title;
+      searchResults.push(res);
     }
   }
 

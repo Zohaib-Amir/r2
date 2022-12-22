@@ -529,8 +529,20 @@ export default class D2Reader {
   /** Search by term and current resource or entire book <br>
    * current = true, will search only current resource <br>
    * current = false, will search entire publication */
-  search = async (term: string, current: boolean) => {
-    return (await this.searchModule?.search(term, current)) ?? [];
+  search = async (
+    term: string,
+    current: boolean,
+    chapterLink?: string,
+    allChapterLinks?: string[]
+  ) => {
+    return (
+      (await this.searchModule?.search(
+        term,
+        current,
+        chapterLink,
+        allChapterLinks
+      )) ?? []
+    );
   };
   goToSearchIndex = async (href: string, index: number, current: boolean) => {
     if (this.navigator.rights.enableSearch) {
