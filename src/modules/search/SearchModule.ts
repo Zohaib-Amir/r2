@@ -746,17 +746,12 @@ export class SearchModule implements ReaderModule {
         const tocItem = {
           href: href,
         };
-        if (this.delegate.api?.getContent) {
-          await this.delegate.api?.getContent(href).then((content) => {
-            this.searchContent(content, term, localSearchResultBook, tocItem);
+
+        await fetch(href, this.delegate.requestConfig)
+          .then((r) => r.text())
+          .then((data) => {
+            this.searchContent(data, term, localSearchResultBook, tocItem);
           });
-        } else {
-          await fetch(href, this.delegate.requestConfig)
-            .then((r) => r.text())
-            .then((data) => {
-              this.searchContent(data, term, localSearchResultBook, tocItem);
-            });
-        }
         if (index === this.publication.readingOrder.length - 1) {
           return localSearchResultBook;
         }
@@ -778,17 +773,11 @@ export class SearchModule implements ReaderModule {
         }
         if (tocItem) {
           let href = this.publication.getAbsoluteHref(tocItem.Href);
-          if (this.delegate.api?.getContent) {
-            await this.delegate.api?.getContent(href).then((content) => {
-              this.searchContent(content, term, localSearchResultBook, tocItem);
+          await fetch(href, this.delegate.requestConfig)
+            .then((r) => r.text())
+            .then((data) => {
+              this.searchContent(data, term, localSearchResultBook, tocItem);
             });
-          } else {
-            await fetch(href, this.delegate.requestConfig)
-              .then((r) => r.text())
-              .then((data) => {
-                this.searchContent(data, term, localSearchResultBook, tocItem);
-              });
-          }
         }
         if (index === this.publication.readingOrder.length - 1) {
           return localSearchResultBook;
