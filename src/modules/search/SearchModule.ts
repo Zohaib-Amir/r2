@@ -833,18 +833,13 @@ export class SearchModule implements ReaderModule {
       } else {
         href = this.publication.getAbsoluteHref(tocItem.Href);
       }
-      if (this.delegate.api?.getContent) {
-        await this.delegate.api?.getContent(href).then((content) => {
-          localSearchResultBook = [...localSearchResultBook, content];
-          this.searchContent(content, term, localSearchResultBook, tocItem);
+
+      await fetch(href, this.delegate.requestConfig)
+        .then((r) => r.text())
+        .then(async (data) => {
+          localSearchResultBook = [...localSearchResultBook, data];
+          this.searchContent(data, term, localSearchResultBook, tocItem);
         });
-      } else {
-        await fetch(href, this.delegate.requestConfig)
-          .then((r) => r.text())
-          .then(async (data) => {
-            this.searchContent(data, term, localSearchResultBook, tocItem);
-          });
-      }
     }
 
     return localSearchResultBook;
