@@ -826,7 +826,6 @@ export class SearchModule implements ReaderModule {
       await fetch(href, this.delegate.requestConfig)
         .then((r) => r.text())
         .then(async (data) => {
-          localSearchResultBook = [...localSearchResultBook, data];
           this.searchContent(data, term, localSearchResultBook, tocItem);
         });
     }
