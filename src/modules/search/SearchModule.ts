@@ -744,7 +744,7 @@ export class SearchModule implements ReaderModule {
       for (let index = 0; index < allChapterLinks.length; index++) {
         const href = allChapterLinks[index];
         const tocItem = {
-          href: href,
+          Href: href,
         };
 
         await fetch(href, this.delegate.requestConfig)
