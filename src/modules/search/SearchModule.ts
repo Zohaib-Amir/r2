@@ -799,35 +799,34 @@ export class SearchModule implements ReaderModule {
 
   async searchChapter(term: string, chapterLink?: string): Promise<any> {
     let localSearchResultBook: any = [];
-    let linkHref;
     if (chapterLink) {
-      linkHref = chapterLink;
-    } else {
-      linkHref = this.publication.getAbsoluteHref(
-        this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
-      );
-    }
-
-    let tocItem = this.publication.getTOCItem(linkHref);
-    if (!tocItem) {
-      tocItem = this.publication.readingOrder[
-        this.delegate.currentResource() ?? 0
-      ];
-    }
-    if (tocItem) {
-      let href;
-      if (chapterLink) {
-        href = chapterLink;
-        tocItem.Href = chapterLink;
-      } else {
-        href = this.publication.getAbsoluteHref(tocItem.Href);
-      }
+      const tocItem = { Href: chapterLink };
+      const href = this.publication.getAbsoluteHref(tocItem.Href);
 
       await fetch(href, this.delegate.requestConfig)
         .then((r) => r.text())
         .then(async (data) => {
           this.searchContent(data, term, localSearchResultBook, tocItem);
         });
+    } else {
+      const linkHref = this.publication.getAbsoluteHref(
+        this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
+      );
+      let tocItem = this.publication.getTOCItem(linkHref);
+      if (!tocItem) {
+        tocItem = this.publication.readingOrder[
+          this.delegate.currentResource() ?? 0
+        ];
+      }
+      if (tocItem) {
+        const href = this.publication.getAbsoluteHref(tocItem.Href);
+
+        await fetch(href, this.delegate.requestConfig)
+          .then((r) => r.text())
+          .then(async (data) => {
+            this.searchContent(data, term, localSearchResultBook, tocItem);
+          });
+      }
     }
 
     return localSearchResultBook;
