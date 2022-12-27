@@ -299,20 +299,22 @@ export class SearchModule implements ReaderModule {
     callback: (result: any) => any,
     chapterLink?: string
   ) {
-    let linkHref;
+    let tocItem;
     if (chapterLink) {
-      linkHref = chapterLink;
+      tocItem = {
+        Href: chapterLink,
+      };
     } else {
-      linkHref = this.publication.getAbsoluteHref(
+      const linkHref = this.publication.getAbsoluteHref(
         this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
       );
-    }
 
-    let tocItem = this.publication.getTOCItem(linkHref);
-    if (tocItem === null) {
-      tocItem = this.publication.readingOrder[
-        this.delegate.currentResource() ?? 0
-      ];
+      tocItem = this.publication.getTOCItem(linkHref);
+      if (tocItem === null) {
+        tocItem = this.publication.readingOrder[
+          this.delegate.currentResource() ?? 0
+        ];
+      }
     }
     let localSearchResultChapter: any = [];
 
