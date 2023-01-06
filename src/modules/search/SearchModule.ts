@@ -297,7 +297,8 @@ export class SearchModule implements ReaderModule {
     term: string,
     index: number = 0,
     callback: (result: any) => any,
-    chapterLink?: string
+    chapterLink?: string,
+    updateSearch?: boolean
   ) {
     let tocItem;
     if (chapterLink) {
@@ -350,7 +351,8 @@ export class SearchModule implements ReaderModule {
                   }
                   searchItem.highlight = highlight;
                   localSearchResultChapter.push(searchItem);
-                  this.currentChapterSearchResult.push(searchItem);
+                  if (updateSearch)
+                    this.currentChapterSearchResult.push(searchItem);
                   this.currentSearchHighlights.push(highlight);
                   i++;
                 }, 500);

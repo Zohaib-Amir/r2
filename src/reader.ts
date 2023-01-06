@@ -542,6 +542,21 @@ export default class D2Reader {
       allChapterLinks
     );
   };
+  searchAndPaintChapter = async (
+    term: string,
+    index: number = 0,
+    callback: (result: any) => any,
+    chapterLink?: string,
+    updateSearch?: boolean
+  ) => {
+    await this.searchModule?.searchAndPaintChapter(
+      term,
+      index,
+      callback,
+      chapterLink,
+      updateSearch
+    );
+  };
   goToSearchIndex = async (href: string, index: number, current: boolean) => {
     if (this.navigator.rights.enableSearch) {
       await this.searchModule?.goToSearchIndex(href, index, current);
