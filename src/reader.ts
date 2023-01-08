@@ -491,6 +491,7 @@ export default class D2Reader {
     );
   };
 
+  /** Add Highlight */
   removeHighlight = async (selectionInfo: ISelectionInfo) => {
     const uniqueStr = `${selectionInfo.rangeInfo.startContainerElementCssSelector}${selectionInfo.rangeInfo.startContainerChildTextNodeIndex}${selectionInfo.rangeInfo.startOffset}${selectionInfo.rangeInfo.endContainerElementCssSelector}${selectionInfo.rangeInfo.endContainerChildTextNodeIndex}${selectionInfo.rangeInfo.endOffset}`;
     const sha256Hex = SHA256.hash(uniqueStr);
