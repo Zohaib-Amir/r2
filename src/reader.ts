@@ -65,6 +65,7 @@ import CitationModule from "./modules/citation/CitationModule";
 import { TaJsonDeserialize } from "./utils/JsonUtil";
 
 import { ISelectionInfo } from "./modules/highlight/common/selection";
+import { HighlightType } from "./modules/highlight/common/highlight";
 
 /**
  * A class that, once instantiated using the public `.build` method,
@@ -486,9 +487,17 @@ export default class D2Reader {
         selectionInfo,
         color,
         false,
-        AnnotationMarker.Highlight
+        AnnotationMarker.Highlight,
+        undefined,
+        undefined,
+        undefined,
+        HighlightType.Search
       )) ?? false
     );
+  };
+
+  removeSearchHighlights = () => {
+    this.highlighter.destroyHighlights(HighlightType.Search);
   };
 
   /** Add Highlight */
