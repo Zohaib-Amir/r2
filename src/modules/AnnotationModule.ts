@@ -686,7 +686,8 @@ export class AnnotationModule implements ReaderModule {
       ) as HTMLDivElement;
       if (
         this.delegate.view?.isScrollMode() &&
-        this.properties?.enableComments
+        this.properties?.enableComments &&
+        this.commentGutter
       ) {
         this.commentGutter.style.removeProperty("display");
       } else {
@@ -777,7 +778,8 @@ export class AnnotationModule implements ReaderModule {
                   this.scrollToHighlight(rangeRepresentation.highlight.id);
                 }
               );
-              this.commentGutter?.appendChild(highlightAreaIcon);
+              if (this.commentGutter)
+                this.commentGutter.appendChild(highlightAreaIcon);
             });
           }
         }
