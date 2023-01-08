@@ -292,6 +292,74 @@ export class SearchModule implements ReaderModule {
     }
   }
 
+  async searchAndPaintTermInChapter(
+    term: string,
+    index: number = 0,
+    chapterLink?: string
+  ) {
+    let tocItem;
+    if (chapterLink) {
+      tocItem = {
+        Href: chapterLink,
+      };
+    } else {
+      const linkHref = this.publication.getAbsoluteHref(
+        this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
+      );
+
+      tocItem = this.publication.getTOCItem(linkHref);
+      if (tocItem === null) {
+        tocItem = this.publication.readingOrder[
+          this.delegate.currentResource() ?? 0
+        ];
+      }
+      let localSearchResultChapter: any = [];
+
+      // clear search results // needs more works
+      this.highlighter?.destroyHighlights(HighlightType.Search);
+      if (this.delegate.rights.enableSearch) {
+        this.drawSearch();
+      }
+      let i = 0;
+      if (tocItem) {
+        let doc = this.delegate.iframes[0].contentDocument;
+        if (doc) {
+          if (tocItem) {
+            searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
+              (result) => {
+                result.forEach((searchItem) => {
+                  let selectionInfo = {
+                    rangeInfo: searchItem.rangeInfo,
+                  };
+                  setTimeout(() => {
+                    let highlight;
+                    if (i === index) {
+                      highlight = this.createSearchHighlight(
+                        selectionInfo,
+                        this.properties?.current!!
+                      );
+                      this.jumpToMark(index);
+                    } else {
+                      highlight = this.createSearchHighlight(
+                        selectionInfo,
+                        this.properties?.color!!
+                      );
+                    }
+                    searchItem.highlight = highlight;
+                    localSearchResultChapter.push(searchItem);
+
+                    this.currentSearchHighlights.push(highlight);
+                    i++;
+                  }, 500);
+                });
+              }
+            );
+          }
+        }
+      }
+    }
+  }
+
   // Search Current Resource
   async searchAndPaintChapter(
     term: string,

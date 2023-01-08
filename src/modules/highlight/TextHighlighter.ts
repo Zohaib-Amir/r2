@@ -149,7 +149,9 @@ export class TextHighlighter {
   private hasEventListener: boolean;
   activeAnnotationMarkerId?: string = undefined;
 
-  public static async create(config: TextHighlighterConfig): Promise<any> {
+  public static async create(
+    config: TextHighlighterConfig
+  ): Promise<TextHighlighter> {
     const module = new this(
       config.delegate,
       config.layerSettings,
@@ -2709,6 +2711,10 @@ export class TextHighlighter {
     prefix?: string | undefined
   ): [IHighlight, HTMLDivElement?] {
     try {
+      if (!win) {
+        let doc = this.delegate.iframes[0].contentDocument;
+        if (doc) win = this.dom(doc.body).getWindow();
+      }
       const uniqueStr = `${selectionInfo.rangeInfo.startContainerElementCssSelector}${selectionInfo.rangeInfo.startContainerChildTextNodeIndex}${selectionInfo.rangeInfo.startOffset}${selectionInfo.rangeInfo.endContainerElementCssSelector}${selectionInfo.rangeInfo.endContainerChildTextNodeIndex}${selectionInfo.rangeInfo.endOffset}`;
       const sha256Hex = SHA256.hash(uniqueStr);
       const id = (prefix ? prefix : "R2_HIGHLIGHT_") + sha256Hex;

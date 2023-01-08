@@ -16,7 +16,12 @@
  * Developed on behalf of: NYPL, Bokbasen AS (https://www.bokbasen.no), CAST (http://www.cast.org)
  * Licensed to: NYPL, Bokbasen AS and CAST under one or more contributor license agreements.
  */
-import { Annotation, Bookmark, Locator } from "./model/Locator";
+import {
+  Annotation,
+  AnnotationMarker,
+  Bookmark,
+  Locator,
+} from "./model/Locator";
 import { Publication } from "./model/Publication";
 import { UserSettingsIncrementable } from "./model/user-settings/UserProperties";
 import { UserSettings } from "./model/user-settings/UserSettings";
@@ -24,6 +29,8 @@ import { AnnotationModule } from "./modules/AnnotationModule";
 import { BookmarkModule } from "./modules/BookmarkModule";
 import { TextHighlighter } from "./modules/highlight/TextHighlighter";
 import { MediaOverlayModule } from "./modules/mediaoverlays/MediaOverlayModule";
+import { SHA256 } from "jscrypto/es6/SHA256";
+
 import {
   MediaOverlaySettings,
   IMediaOverlayUserSettings,
@@ -56,6 +63,8 @@ import LineFocusModule from "./modules/linefocus/LineFocusModule";
 import { HistoryModule } from "./modules/history/HistoryModule";
 import CitationModule from "./modules/citation/CitationModule";
 import { TaJsonDeserialize } from "./utils/JsonUtil";
+
+import { ISelectionInfo } from "./modules/highlight/common/selection";
 
 /**
  * A class that, once instantiated using the public `.build` method,
@@ -463,6 +472,33 @@ export default class D2Reader {
   /** Add annotation */
   addAnnotation = async (highlight: Annotation) => {
     return (await this.annotationModule?.addAnnotation(highlight)) ?? false;
+  };
+
+  /** Add Highlight */
+  addHighlight = async (
+    selectionInfo: ISelectionInfo,
+    color: string | undefined
+  ) => {
+    if (!color) color = "#fdff32";
+    return (
+      (await this.highlighter.createHighlight(
+        null,
+        selectionInfo,
+        color,
+        false,
+        AnnotationMarker.Highlight
+      )) ?? false
+    );
+  };
+
+  removeHighlight = async (selectionInfo: ISelectionInfo) => {
+    const uniqueStr = `${selectionInfo.rangeInfo.startContainerElementCssSelector}${selectionInfo.rangeInfo.startContainerChildTextNodeIndex}${selectionInfo.rangeInfo.startOffset}${selectionInfo.rangeInfo.endContainerElementCssSelector}${selectionInfo.rangeInfo.endContainerChildTextNodeIndex}${selectionInfo.rangeInfo.endOffset}`;
+    const sha256Hex = SHA256.hash(uniqueStr);
+    const id = "R2_DEFINITION_" + sha256Hex;
+    this.highlighter.destroyHighlight(
+      this.navigator.iframes[0].contentDocument,
+      id
+    );
   };
 
   /** Hide Annotation Layer */
