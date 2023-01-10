@@ -1416,7 +1416,13 @@ export class TextHighlighter {
             selectionInfo,
             createColor,
             true,
-            AnnotationMarker.Highlight
+            AnnotationMarker.Comment,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            true
           );
 
           return highlight;
@@ -2766,7 +2772,8 @@ export class TextHighlighter {
     popup?: IPopupStyle | undefined,
     style?: IStyle | undefined,
     type?: HighlightType | undefined,
-    prefix?: string | undefined
+    prefix?: string | undefined,
+    dontAddToHighlights?: boolean
   ): [IHighlight, HTMLDivElement?] {
     try {
       if (!win) {
@@ -2797,7 +2804,7 @@ export class TextHighlighter {
         type === HighlightType.Definition ||
         type === undefined
       ) {
-        _highlights.push(highlight);
+        if (!dontAddToHighlights) _highlights.push(highlight);
       }
 
       let highlightDom = this.createHighlightDom(win, highlight);
