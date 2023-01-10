@@ -1423,6 +1423,7 @@ export class TextHighlighter {
         }
       }
     }
+    return null;
   }
 
   /**
