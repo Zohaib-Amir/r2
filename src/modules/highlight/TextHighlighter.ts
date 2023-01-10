@@ -1098,7 +1098,10 @@ export class TextHighlighter {
   }, 100);
 
   selection = debounce((text, selection) => {
-    if (this.api?.selection) this.api?.selection(text, selection);
+    if (this.api?.selection) {
+      const currentSelectionInfo = this.getCurrentSelectedFragment();
+      this.api?.selection(text, selection, currentSelectionInfo);
+    }
   }, 100);
 
   toolboxPlacement() {
@@ -1363,6 +1366,60 @@ export class TextHighlighter {
               itemElement?.addEventListener("click", itemEvent);
             }
           });
+        }
+      }
+    }
+  }
+
+  /**
+   * returns the highlight data for currently selected text
+   */
+  getCurrentSelectedFragment() {
+    let self = this;
+    function getCssSelector(element: Element): string | undefined {
+      const options = {
+        className: (str: string) => {
+          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+        },
+        idName: (str: string) => {
+          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+        },
+      };
+      let doc = self.delegate.iframes[0].contentDocument;
+      if (doc) {
+        return uniqueCssSelector(element, doc, options);
+      } else {
+        return undefined;
+      }
+    }
+    let win = self.delegate.iframes[0].contentWindow;
+    if (win) {
+      let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
+
+      if (selectionInfo === undefined) {
+        let doc = self.delegate.iframes[0].contentDocument;
+        selectionInfo = this.delegate.annotationModule?.annotator?.getTemporarySelectionInfo(
+          doc
+        );
+      }
+
+      if (selectionInfo) {
+        let createColor: any;
+        createColor = this.getColor();
+        if (TextHighlighter.isHexColor(createColor)) {
+          createColor = TextHighlighter.hexToRgbChannels(createColor);
+        }
+        let doc = self.delegate.iframes[0].contentDocument;
+        if (doc) {
+          let highlight = this.createHighlight(
+            self.dom(doc.body).getWindow(),
+            selectionInfo,
+            createColor,
+            true,
+            AnnotationMarker.Highlight
+          );
+
+          return highlight;
         }
       }
     }

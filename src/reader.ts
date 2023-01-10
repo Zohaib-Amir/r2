@@ -500,7 +500,7 @@ export default class D2Reader {
     this.highlighter.destroyHighlights(HighlightType.Search);
   };
 
-  /** Add Highlight */
+  /** remove Highlight */
   removeHighlight = (selectionInfo: ISelectionInfo) => {
     const uniqueStr = `${selectionInfo.rangeInfo.startContainerElementCssSelector}${selectionInfo.rangeInfo.startContainerChildTextNodeIndex}${selectionInfo.rangeInfo.startOffset}${selectionInfo.rangeInfo.endContainerElementCssSelector}${selectionInfo.rangeInfo.endContainerChildTextNodeIndex}${selectionInfo.rangeInfo.endOffset}`;
     const sha256Hex = SHA256.hash(uniqueStr);
@@ -509,6 +509,11 @@ export default class D2Reader {
       this.navigator.iframes[0].contentDocument,
       id
     );
+  };
+
+  //** returns currently selected text information */
+  getCurrentSelection = () => {
+    return this.highlighter.getCurrentSelectedFragment();
   };
 
   /** Hide Annotation Layer */
