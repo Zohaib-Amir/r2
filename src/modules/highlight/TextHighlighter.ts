@@ -1355,6 +1355,8 @@ export class TextHighlighter {
   }
 
   getCssSelector(element: Element): string | undefined {
+    let self = this;
+
     const options = {
       className: (str: string) => {
         return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
@@ -1363,7 +1365,7 @@ export class TextHighlighter {
         return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
       },
     };
-    let doc = this.delegate.iframes[0].contentDocument;
+    let doc = self.delegate.iframes[0].contentDocument;
     if (doc) {
       return uniqueCssSelector(element, doc, options);
     } else {
