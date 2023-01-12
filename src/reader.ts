@@ -98,8 +98,9 @@ export default class D2Reader {
     private readonly citationModule?: CitationModule
   ) {}
 
-  addEventListener() {
-    this.navigator.addListener(arguments[0], arguments[1]);
+  addEventListener(arg1?: any, arg2?: any) {
+    if (!arg1 && !arg2) this.navigator.addListener(arguments[0], arguments[1]);
+    if (arg1 && arg2) this.navigator.addListener(arg1, arg2);
   }
 
   /**
