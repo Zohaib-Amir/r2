@@ -1099,10 +1099,10 @@ export class TextHighlighter {
 
   selection = debounce((text, selection) => {
     if (this.api?.selection) {
-      const currentSelectionInfo = this.getCurrentSelectedFragment();
+      const currentSelectionInfo = this.getAnnotationForCurrentSelectedFragment();
       this.api?.selection(text, selection, currentSelectionInfo);
     }
-  }, 100);
+  }, 200);
 
   toolboxPlacement() {
     let range = this.dom(
@@ -1264,28 +1264,11 @@ export class TextHighlighter {
             function itemEvent() {
               itemElement?.removeEventListener("click", itemEvent);
 
-              function getCssSelector(element: Element): string | undefined {
-                const options = {
-                  className: (str: string) => {
-                    return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-                  },
-                  idName: (str: string) => {
-                    return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-                  },
-                };
-                let doc = self.delegate.iframes[0].contentDocument;
-                if (doc) {
-                  return uniqueCssSelector(element, doc, options);
-                } else {
-                  return undefined;
-                }
-              }
-
               let win = self.delegate.iframes[0].contentWindow;
               if (win) {
                 let selectionInfo = getCurrentSelectionInfo(
                   win,
-                  getCssSelector
+                  self.getCssSelector
                 );
                 if (selectionInfo === undefined) {
                   let doc = self.delegate.iframes[0].contentDocument;
@@ -1371,30 +1354,32 @@ export class TextHighlighter {
     }
   }
 
+  getCssSelector(element: Element): string | undefined {
+    const options = {
+      className: (str: string) => {
+        return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+      },
+      idName: (str: string) => {
+        return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+      },
+    };
+    let doc = this.delegate.iframes[0].contentDocument;
+    if (doc) {
+      return uniqueCssSelector(element, doc, options);
+    } else {
+      return undefined;
+    }
+  }
+
   /**
    * returns the highlight data for currently selected text
    */
-  getCurrentSelectedFragment() {
+  getAnnotationForCurrentSelectedFragment() {
     let self = this;
-    function getCssSelector(element: Element): string | undefined {
-      const options = {
-        className: (str: string) => {
-          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-        },
-        idName: (str: string) => {
-          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-        },
-      };
-      let doc = self.delegate.iframes[0].contentDocument;
-      if (doc) {
-        return uniqueCssSelector(element, doc, options);
-      } else {
-        return undefined;
-      }
-    }
+
     let win = self.delegate.iframes[0].contentWindow;
     if (win) {
-      let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
+      let selectionInfo = getCurrentSelectionInfo(win, this.getCssSelector);
 
       if (selectionInfo === undefined) {
         let doc = self.delegate.iframes[0].contentDocument;
@@ -1411,7 +1396,7 @@ export class TextHighlighter {
         }
         let doc = self.delegate.iframes[0].contentDocument;
         if (doc) {
-          let highlight = this.createHighlight(
+          const highlight = this.getHighlight(
             self.dom(doc.body).getWindow(),
             selectionInfo,
             createColor,
@@ -1421,15 +1406,18 @@ export class TextHighlighter {
             undefined,
             undefined,
             undefined,
-            undefined,
-            true
+            undefined
           );
 
-          return highlight;
+          const annotation = self.delegate.annotationModule?.getAnnotationFromHighlight(
+            highlight
+          );
+
+          return annotation;
         }
       }
     }
-    return null;
+    return undefined;
   }
 
   /**
@@ -1440,25 +1428,9 @@ export class TextHighlighter {
    */
   doHighlight(keepRange?: boolean, marker?: AnnotationMarker) {
     let self = this;
-    function getCssSelector(element: Element): string | undefined {
-      const options = {
-        className: (str: string) => {
-          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-        },
-        idName: (str: string) => {
-          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-        },
-      };
-      let doc = self.delegate.iframes[0].contentDocument;
-      if (doc) {
-        return uniqueCssSelector(element, doc, options);
-      } else {
-        return undefined;
-      }
-    }
     let win = self.delegate.iframes[0].contentWindow;
     if (win) {
-      let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
+      let selectionInfo = getCurrentSelectionInfo(win, this.getCssSelector);
 
       if (selectionInfo === undefined) {
         let doc = self.delegate.iframes[0].contentDocument;
@@ -1518,25 +1490,9 @@ export class TextHighlighter {
   speak() {
     if (this.delegate.rights.enableTTS) {
       let self = this;
-      function getCssSelector(element: Element): string | undefined {
-        const options = {
-          className: (str: string) => {
-            return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-          },
-          idName: (str: string) => {
-            return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-          },
-        };
-        let doc = self.delegate.iframes[0].contentDocument;
-        if (doc) {
-          return uniqueCssSelector(element, doc, options);
-        } else {
-          return undefined;
-        }
-      }
       let win = self.delegate.iframes[0].contentWindow;
       if (win) {
-        let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
+        let selectionInfo = getCurrentSelectionInfo(win, this.getCssSelector);
         if (selectionInfo === undefined) {
           let doc = self.delegate.iframes[0].contentDocument;
           selectionInfo = self.delegate.annotationModule?.annotator?.getTemporarySelectionInfo(
@@ -2762,6 +2718,49 @@ export class TextHighlighter {
     }
   }
 
+  getHighlight(
+    win: any,
+    selectionInfo: ISelectionInfo,
+    color: string | undefined,
+    pointerInteraction: boolean,
+    marker: AnnotationMarker,
+    icon?: IMarkerIcon | undefined,
+    popup?: IPopupStyle | undefined,
+    style?: IStyle | undefined,
+    type?: HighlightType | undefined,
+    prefix?: string | undefined
+  ): IHighlight {
+    try {
+      if (!win) {
+        let doc = this.delegate.iframes[0].contentDocument;
+        if (doc) win = this.dom(doc.body).getWindow();
+      }
+      const uniqueStr = `${selectionInfo.rangeInfo.startContainerElementCssSelector}${selectionInfo.rangeInfo.startContainerChildTextNodeIndex}${selectionInfo.rangeInfo.startOffset}${selectionInfo.rangeInfo.endContainerElementCssSelector}${selectionInfo.rangeInfo.endContainerChildTextNodeIndex}${selectionInfo.rangeInfo.endOffset}`;
+      const sha256Hex = SHA256.hash(uniqueStr);
+      const id = (prefix ? prefix : "R2_HIGHLIGHT_") + sha256Hex;
+
+      this.destroyHighlight(win.document, id);
+
+      let defaultColor = `rgb(${DEFAULT_BACKGROUND_COLOR.red}, ${DEFAULT_BACKGROUND_COLOR.green}, ${DEFAULT_BACKGROUND_COLOR.blue})`;
+
+      const highlight: IHighlight = {
+        color: color ? color : defaultColor,
+        id,
+        pointerInteraction,
+        selectionInfo,
+        marker: marker,
+        icon: icon,
+        popup: popup,
+        style: style,
+        type: type ? type : HighlightType.Annotation,
+      };
+
+      return highlight;
+    } catch (e) {
+      throw "Can't get highlight: " + e;
+    }
+  }
+
   createHighlight(
     win: any,
     selectionInfo: ISelectionInfo,
@@ -2772,8 +2771,7 @@ export class TextHighlighter {
     popup?: IPopupStyle | undefined,
     style?: IStyle | undefined,
     type?: HighlightType | undefined,
-    prefix?: string | undefined,
-    dontAddToHighlights?: boolean
+    prefix?: string | undefined
   ): [IHighlight, HTMLDivElement?] {
     try {
       if (!win) {
@@ -2804,7 +2802,7 @@ export class TextHighlighter {
         type === HighlightType.Definition ||
         type === undefined
       ) {
-        if (!dontAddToHighlights) _highlights.push(highlight);
+        _highlights.push(highlight);
       }
 
       let highlightDom = this.createHighlightDom(win, highlight);

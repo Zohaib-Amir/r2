@@ -513,7 +513,7 @@ export default class D2Reader {
 
   //** returns currently selected text information */
   getCurrentSelection = () => {
-    return this.highlighter.getCurrentSelectedFragment();
+    return this.highlighter.getAnnotationForCurrentSelectedFragment();
   };
 
   /** Hide Annotation Layer */
