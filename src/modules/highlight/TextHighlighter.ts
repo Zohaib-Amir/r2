@@ -1264,11 +1264,28 @@ export class TextHighlighter {
             function itemEvent() {
               itemElement?.removeEventListener("click", itemEvent);
 
+              function getCssSelector(element: Element): string | undefined {
+                const options = {
+                  className: (str: string) => {
+                    return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+                  },
+                  idName: (str: string) => {
+                    return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+                  },
+                };
+                let doc = self.delegate.iframes[0].contentDocument;
+                if (doc) {
+                  return uniqueCssSelector(element, doc, options);
+                } else {
+                  return undefined;
+                }
+              }
+
               let win = self.delegate.iframes[0].contentWindow;
               if (win) {
                 let selectionInfo = getCurrentSelectionInfo(
                   win,
-                  self.getCssSelector
+                  getCssSelector
                 );
                 if (selectionInfo === undefined) {
                   let doc = self.delegate.iframes[0].contentDocument;
@@ -1354,34 +1371,31 @@ export class TextHighlighter {
     }
   }
 
-  getCssSelector(element: Element): string | undefined {
-    let self = this;
-
-    const options = {
-      className: (str: string) => {
-        return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-      },
-      idName: (str: string) => {
-        return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
-      },
-    };
-    let doc = self.delegate.iframes[0].contentDocument;
-    if (doc) {
-      return uniqueCssSelector(element, doc, options);
-    } else {
-      return undefined;
-    }
-  }
-
   /**
    * returns the highlight data for currently selected text
    */
   getAnnotationForCurrentSelectedFragment() {
     let self = this;
 
+    function getCssSelector(element: Element): string | undefined {
+      const options = {
+        className: (str: string) => {
+          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+        },
+        idName: (str: string) => {
+          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+        },
+      };
+      let doc = self.delegate.iframes[0].contentDocument;
+      if (doc) {
+        return uniqueCssSelector(element, doc, options);
+      } else {
+        return undefined;
+      }
+    }
     let win = self.delegate.iframes[0].contentWindow;
     if (win) {
-      let selectionInfo = getCurrentSelectionInfo(win, this.getCssSelector);
+      let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
 
       if (selectionInfo === undefined) {
         let doc = self.delegate.iframes[0].contentDocument;
@@ -1430,9 +1444,26 @@ export class TextHighlighter {
    */
   doHighlight(keepRange?: boolean, marker?: AnnotationMarker) {
     let self = this;
+    function getCssSelector(element: Element): string | undefined {
+      const options = {
+        className: (str: string) => {
+          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+        },
+        idName: (str: string) => {
+          return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+        },
+      };
+      let doc = self.delegate.iframes[0].contentDocument;
+      if (doc) {
+        return uniqueCssSelector(element, doc, options);
+      } else {
+        return undefined;
+      }
+    }
+
     let win = self.delegate.iframes[0].contentWindow;
     if (win) {
-      let selectionInfo = getCurrentSelectionInfo(win, this.getCssSelector);
+      let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
 
       if (selectionInfo === undefined) {
         let doc = self.delegate.iframes[0].contentDocument;
@@ -1492,9 +1523,25 @@ export class TextHighlighter {
   speak() {
     if (this.delegate.rights.enableTTS) {
       let self = this;
+      function getCssSelector(element: Element): string | undefined {
+        const options = {
+          className: (str: string) => {
+            return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+          },
+          idName: (str: string) => {
+            return _blacklistIdClassForCssSelectors.indexOf(str) < 0;
+          },
+        };
+        let doc = self.delegate.iframes[0].contentDocument;
+        if (doc) {
+          return uniqueCssSelector(element, doc, options);
+        } else {
+          return undefined;
+        }
+      }
       let win = self.delegate.iframes[0].contentWindow;
       if (win) {
-        let selectionInfo = getCurrentSelectionInfo(win, this.getCssSelector);
+        let selectionInfo = getCurrentSelectionInfo(win, getCssSelector);
         if (selectionInfo === undefined) {
           let doc = self.delegate.iframes[0].contentDocument;
           selectionInfo = self.delegate.annotationModule?.annotator?.getTemporarySelectionInfo(
