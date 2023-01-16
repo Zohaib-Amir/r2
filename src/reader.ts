@@ -232,6 +232,7 @@ export default class D2Reader {
           : initialConfig.injectables,
       attributes: initialConfig.attributes,
       services: initialConfig.services,
+      mouseEventHandlers: initialConfig.mouseEventHandlers,
     });
 
     // Highlighter
