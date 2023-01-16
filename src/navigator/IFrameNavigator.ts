@@ -831,7 +831,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       );
 
       addEventListenerOptional(
-        iframe.contentDocument,
+        iframe.contentDocument?.body,
         "click",
         this.mouseEventHandlers?.onClick.bind(this)
       );
