@@ -216,7 +216,10 @@ export class TextHighlighter {
     setTimeout(async () => {
       let doc = this.delegate.iframes[0].contentDocument;
       if (doc) {
-        await doc.body?.addEventListener("click", unselect);
+        await doc.body?.addEventListener("click", () => {
+          unselect();
+          console.log("🔴", "kljlk1j3kl21j3lk21j3lk21j3lk21jl");
+        });
       }
     }, 100);
   }
