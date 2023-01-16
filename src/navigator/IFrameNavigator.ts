@@ -829,6 +829,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
         "load",
         this.handleIFrameLoad.bind(this)
       );
+
       addEventListenerOptional(
         iframe,
         "click",
