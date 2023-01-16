@@ -232,13 +232,13 @@ export default class D2Reader {
           : initialConfig.injectables,
       attributes: initialConfig.attributes,
       services: initialConfig.services,
-      mouseEventHandlers: initialConfig.mouseEventHandlers,
     });
 
     // Highlighter
     const highlighter = await TextHighlighter.create({
       delegate: navigator,
       layerSettings: layers,
+      mouseEventHandler: initialConfig.mouseEventHandlers,
       ...initialConfig.highlighter,
     });
 

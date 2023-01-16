@@ -139,7 +139,6 @@ export interface IFrameNavigatorConfig {
   services?: PublicationServices;
   sample?: SampleRead;
   requestConfig?: RequestConfig;
-  mouseEventHandlers?: MouseEventHandlers;
 }
 export interface PublicationServices {
   positions?: URL;
@@ -184,9 +183,10 @@ export interface ReaderUI {
   settings: UserSettingsUIConfig;
 }
 
-export interface MouseEventHandlers {
+export type MouseEventHandlers = {
   onClick: () => void;
-}
+};
+
 export interface ReaderConfig {
   publication?: any;
   url: URL;
@@ -314,7 +314,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   sample?: SampleRead;
   requestConfig?: RequestConfig;
   private didInitKeyboardEventHandler: boolean = false;
-  mouseEventHandlers?: MouseEventHandlers;
 
   public static async create(
     config: IFrameNavigatorConfig
@@ -331,8 +330,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       config.attributes || { margin: 0 },
       config.services,
       config.sample,
-      config.requestConfig,
-      config.mouseEventHandlers
+      config.requestConfig
     );
 
     await navigator.start(
@@ -355,8 +353,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     attributes?: IFrameAttributes,
     services?: PublicationServices,
     sample?: SampleRead,
-    requestConfig?: RequestConfig,
-    mouseEventHandlers?: MouseEventHandlers
+    requestConfig?: RequestConfig
   ) {
     super();
     this.settings = settings;
@@ -393,7 +390,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.sample = sample;
     this.requestConfig = requestConfig;
     this.sampleReadEventHandler = new SampleReadEventHandler(this);
-    this.mouseEventHandlers = mouseEventHandlers;
   }
 
   stop() {
@@ -828,11 +824,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
         iframe,
         "load",
         this.handleIFrameLoad.bind(this)
-      );
-
-      iframe.contentDocument?.body.addEventListener(
-        "click",
-        this.mouseEventHandlers?.onClick as () => void
       );
     }
 

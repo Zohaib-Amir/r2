@@ -40,7 +40,10 @@ import {
 import { uniqueCssSelector } from "./renderer/common/cssselector2";
 import { Annotation, AnnotationMarker } from "../../model/Locator";
 import { icons, iconTemplateColored } from "../../utils/IconLib";
-import { IFrameNavigator } from "../../navigator/IFrameNavigator";
+import {
+  IFrameNavigator,
+  MouseEventHandlers,
+} from "../../navigator/IFrameNavigator";
 import { TTSModule2 } from "../TTS/TTSModule2";
 import * as HTMLUtilities from "../../utils/HTMLUtilities";
 import * as lodash from "lodash";
@@ -137,6 +140,7 @@ export interface TextHighlighterConfig extends TextHighlighterProperties {
   delegate: IFrameNavigator;
   api?: TextSelectorAPI;
   layerSettings: LayerSettings;
+  mouseEventHandler?: MouseEventHandlers;
 }
 
 export class TextHighlighter {
@@ -148,6 +152,7 @@ export class TextHighlighter {
   private api?: TextSelectorAPI;
   private hasEventListener: boolean;
   activeAnnotationMarkerId?: string = undefined;
+  mouseEventHandlers?: MouseEventHandlers;
 
   public static async create(
     config: TextHighlighterConfig
@@ -158,7 +163,8 @@ export class TextHighlighter {
       config as TextHighlighterProperties,
       false,
       {},
-      config.api
+      config.api,
+      config.mouseEventHandler
     );
     return new Promise((resolve) => resolve(module));
   }
@@ -169,7 +175,8 @@ export class TextHighlighter {
     properties: TextHighlighterProperties,
     hasEventListener: boolean,
     options: any,
-    api?: TextSelectorAPI
+    api?: TextSelectorAPI,
+    mouseEventHandlers?: MouseEventHandlers
   ) {
     this.delegate = delegate;
     this.layerSettings = layerSettings;
@@ -186,6 +193,7 @@ export class TextHighlighter {
       onAfterHighlight: function () {},
     });
     this.delegate.highlighter = this;
+    this.mouseEventHandlers = mouseEventHandlers;
   }
   async initialize() {
     let doc = this.delegate.iframes[0].contentDocument;
@@ -218,7 +226,7 @@ export class TextHighlighter {
       if (doc) {
         await doc.body?.addEventListener("click", () => {
           unselect();
-          console.log("🔴", "kljlk1j3kl21j3lk21j3lk21j3lk21jl");
+          this.mouseEventHandlers?.onClick();
         });
       }
     }, 100);
