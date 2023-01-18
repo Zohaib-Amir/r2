@@ -249,8 +249,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   settings: UserSettings;
   private readonly annotator: Annotator | undefined;
 
-  isBeingStyled: boolean;
   view: BookView;
+  shouldShowContent: boolean;
 
   private readonly eventHandler: EventHandler;
   private readonly touchEventHandler: TouchEventHandler;
@@ -289,6 +289,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private newPosition: Locator | undefined;
   private newElementId: string | undefined;
   private isLoading: boolean;
+  private isBeingStyled: boolean;
   private readonly initialLastReadingPosition?: ReadingPosition;
   api?: Partial<NavigatorAPI>;
   rights: Partial<ReaderRights> = {
@@ -1481,6 +1482,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
 
         this.hideLoadingMessage();
         this.showIframeContents();
+
         if (
           this.rights.enableMediaOverlays &&
           this.mediaOverlayModule !== undefined &&
@@ -3064,6 +3066,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
         });
       }
     }, 150);
+    this.shouldShowContent = true;
   }
 
   private showLoadingMessageAfterDelay() {
@@ -3084,6 +3087,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       iframe.style.border = "none";
       iframe.style.overflow = "hidden";
     });
+    this.shouldShowContent = false;
   }
 
   private hideLoadingMessage() {
