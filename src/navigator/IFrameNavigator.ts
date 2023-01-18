@@ -1621,6 +1621,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.precessContentForIframe();
   }
 
+  //TODO - 🔴
   private precessContentForIframe() {
     const self = this;
     var index = this.publication.getSpineIndex(this.currentChapterLink.href);
@@ -2920,8 +2921,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
             this.currentChapterLink.href + "#" + this.newElementId;
         }
 
-        this.hideIframeContents();
-        this.showLoadingMessageAfterDelay();
+        // this.hideIframeContents();
+        // this.showLoadingMessageAfterDelay();
         if (locator.locations === undefined) {
           locator.locations = {
             progression: 0,
@@ -3077,6 +3078,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
+  //TODO - 🔴
   private hideIframeContents() {
     this.isBeingStyled = true;
     this.iframes.forEach((iframe) => {

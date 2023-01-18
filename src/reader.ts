@@ -212,7 +212,7 @@ export default class D2Reader {
           : "reflowable",
     });
 
-    // Navigator
+    // Navigator //NOTE - 🔴
     const navigator = await IFrameNavigator.create({
       mainElement: mainElement,
       headerMenu: headerMenu,
@@ -255,7 +255,7 @@ export default class D2Reader {
         })
       : undefined;
 
-    // Annotation Module
+    // Annotation Module //NOTE - 🔴
     const annotationModule = rights.enableAnnotations
       ? await AnnotationModule.create({
           annotator: annotator,
@@ -348,6 +348,7 @@ export default class D2Reader {
         })
       : undefined;
 
+    //NOTE - 🔴
     const enablePageBreaks = rights.enablePageBreaks;
     const pageBreakModule =
       enablePageBreaks && publication.isReflowable
