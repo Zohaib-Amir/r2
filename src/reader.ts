@@ -643,7 +643,7 @@ export default class D2Reader {
     return this.navigator.publication.Metadata.Language;
   }
   get shouldShowContent() {
-    return !this.navigator.shouldShowContent;
+    return this.navigator.shouldShowContent;
   }
 
   /**
