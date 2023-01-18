@@ -642,6 +642,9 @@ export default class D2Reader {
   get publicationLanguage() {
     return this.navigator.publication.Metadata.Language;
   }
+  get isContentReady() {
+    return !this.navigator.isBeingStyled;
+  }
 
   /**
    * Settings

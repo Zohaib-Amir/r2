@@ -249,6 +249,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   settings: UserSettings;
   private readonly annotator: Annotator | undefined;
 
+  isBeingStyled: boolean;
   view: BookView;
 
   private readonly eventHandler: EventHandler;
@@ -287,7 +288,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private remainingPositions: HTMLSpanElement;
   private newPosition: Locator | undefined;
   private newElementId: string | undefined;
-  private isBeingStyled: boolean;
   private isLoading: boolean;
   private readonly initialLastReadingPosition?: ReadingPosition;
   api?: Partial<NavigatorAPI>;
@@ -1621,7 +1621,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.precessContentForIframe();
   }
 
-  //TODO - 🔴
   private precessContentForIframe() {
     const self = this;
     var index = this.publication.getSpineIndex(this.currentChapterLink.href);
@@ -2921,8 +2920,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
             this.currentChapterLink.href + "#" + this.newElementId;
         }
 
-        // this.hideIframeContents();
-        // this.showLoadingMessageAfterDelay();
+        this.hideIframeContents();
+        this.showLoadingMessageAfterDelay();
         if (locator.locations === undefined) {
           locator.locations = {
             progression: 0,
@@ -3078,7 +3077,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
-  //TODO - 🔴
   private hideIframeContents() {
     this.isBeingStyled = true;
     this.iframes.forEach((iframe) => {
