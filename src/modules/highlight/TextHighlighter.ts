@@ -228,6 +228,10 @@ export class TextHighlighter {
           unselect();
           this.mouseEventHandlers?.onClick();
         });
+        await doc.body?.addEventListener("touchstart", () => {
+          unselect();
+          this.mouseEventHandlers?.touchStart();
+        });
       }
     }, 100);
   }

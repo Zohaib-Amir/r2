@@ -185,6 +185,7 @@ export interface ReaderUI {
 
 export type MouseEventHandlers = {
   onClick: () => void;
+  touchStart: () => void;
 };
 
 export interface ReaderConfig {
