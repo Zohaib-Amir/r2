@@ -169,11 +169,11 @@ export class AnnotationModule implements ReaderModule {
         doc,
         "#R2_ID_HIGHLIGHTS_CONTAINER"
       );
-      if (container) {
+      if (container && container.style) {
         container.style.display = "none";
       }
     }
-    if (this.show && this.hide) {
+    if (this.show && this.hide && this.show.style && this.hide.style) {
       this.show.style.display = "block";
       this.hide.style.display = "none";
     }
@@ -185,11 +185,11 @@ export class AnnotationModule implements ReaderModule {
         doc,
         "#R2_ID_HIGHLIGHTS_CONTAINER"
       );
-      if (container) {
+      if (container && container.style) {
         container.style.display = "block";
       }
     }
-    if (this.show && this.hide) {
+    if (this.show && this.hide && this.show.style && this.hide.style) {
       this.show.style.display = "none";
       this.hide.style.display = "block";
     }
@@ -234,8 +234,10 @@ export class AnnotationModule implements ReaderModule {
         // menuItem.icon.svgPath = `<path d="M4,16v6h16v-6c0-1.1-0.9-2-2-2H6C4.9,14,4,14.9,4,16z M18,18H6v-2h12V18z M12,2C9.24,2,7,4.24,7,7l5,7l5-7 C17,4.24,14.76,2,12,2z M12,11L9,7c0-1.66,1.34-3,3-3s3,1.34,3,3L12,11z"/>`;
         // menuItem.icon.color = `#dc491d`;
         // menuItem.highlight.color = `#dc491d`;
-        menuItem.highlight.style.default = null;
-        menuItem.highlight.style.hover = null;
+        if (menuItem.highlight.style) {
+          menuItem.highlight.style.default = null;
+          menuItem.highlight.style.hover = null;
+        }
         let doc = this.delegate.iframes[0].contentDocument;
         if (doc) {
           const selection = this.highlighter?.dom(doc.body).getSelection();
@@ -775,7 +777,8 @@ export class AnnotationModule implements ReaderModule {
       if (
         this.delegate.view?.isScrollMode() &&
         this.properties?.enableComments &&
-        this.commentGutter
+        this.commentGutter &&
+        this.commentGutter.style
       ) {
         this.commentGutter.style.removeProperty("display");
       } else {
@@ -799,7 +802,8 @@ export class AnnotationModule implements ReaderModule {
               let icon: HTMLElement = document.createElement("i");
               icon.innerHTML = "sticky_note_2";
               icon.className = "material-icons";
-              icon.style.color = rangeRepresentation.highlight.color;
+              if (icon.style)
+                icon.style.color = rangeRepresentation.highlight.color;
 
               let container = doc!.getElementById("R2_ID_HIGHLIGHTS_CONTAINER");
               let highlightArea;
@@ -960,7 +964,7 @@ export class AnnotationModule implements ReaderModule {
                       "object"
                     ) {
                       let color = (locator as Annotation).highlight?.color;
-                      if (color) {
+                      if (color && marker.style) {
                         marker.style.setProperty(
                           "border-bottom",
                           `2px solid ${TextHighlighter.hexToRgbA(color)}`,
@@ -968,11 +972,14 @@ export class AnnotationModule implements ReaderModule {
                         );
                       }
                     } else {
-                      marker.style.setProperty(
-                        "border-bottom",
-                        `2px solid ${(locator as Annotation).highlight?.color}`,
-                        "important"
-                      );
+                      if (marker.style)
+                        marker.style.setProperty(
+                          "border-bottom",
+                          `2px solid ${
+                            (locator as Annotation).highlight?.color
+                          }`,
+                          "important"
+                        );
                     }
                   } else {
                     if (
@@ -980,14 +987,14 @@ export class AnnotationModule implements ReaderModule {
                       "object"
                     ) {
                       let color = (locator as Annotation).highlight?.color;
-                      if (color) {
+                      if (color && marker.style) {
                         marker.style.backgroundColor = TextHighlighter.hexToRgbA(
                           color
                         );
                       }
                     } else {
                       let color = (locator as Annotation).highlight?.color;
-                      if (color) {
+                      if (color && marker.style) {
                         marker.style.backgroundColor = color;
                       }
                     }
