@@ -659,7 +659,8 @@ export class AnnotationModule implements ReaderModule {
                     let icon: HTMLElement = document.createElement("i");
                     icon.innerHTML = "sticky_note_2";
                     icon.className = "material-icons";
-                    icon.style.color = annotation.highlight.color;
+                    if (icon.style)
+                      icon.style.color = annotation.highlight.color;
 
                     div.appendChild(icon);
 
