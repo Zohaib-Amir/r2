@@ -182,6 +182,12 @@ export interface ReaderRights {
 export interface ReaderUI {
   settings: UserSettingsUIConfig;
 }
+
+export type MouseEventHandlers = {
+  onClick: () => void;
+  touchStart: () => void;
+};
+
 export interface ReaderConfig {
   publication?: any;
   url: URL;
@@ -208,6 +214,7 @@ export interface ReaderConfig {
   services?: PublicationServices;
   sample?: SampleRead;
   requestConfig?: RequestConfig;
+  mouseEventHandlers?: MouseEventHandlers;
 }
 
 /** Class that shows webpub resources in an iframe, with navigation controls outside the iframe. */
@@ -244,6 +251,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private readonly annotator: Annotator | undefined;
 
   view: BookView;
+  shouldShowContent: boolean;
 
   private readonly eventHandler: EventHandler;
   private readonly touchEventHandler: TouchEventHandler;
@@ -281,8 +289,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private remainingPositions: HTMLSpanElement;
   private newPosition: Locator | undefined;
   private newElementId: string | undefined;
-  private isBeingStyled: boolean;
   private isLoading: boolean;
+  private isBeingStyled: boolean;
   private readonly initialLastReadingPosition?: ReadingPosition;
   api?: Partial<NavigatorAPI>;
   rights: Partial<ReaderRights> = {
@@ -1475,6 +1483,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
 
         this.hideLoadingMessage();
         this.showIframeContents();
+
         if (
           this.rights.enableMediaOverlays &&
           this.mediaOverlayModule !== undefined &&
@@ -3058,6 +3067,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
         });
       }
     }, 150);
+    this.shouldShowContent = true;
   }
 
   private showLoadingMessageAfterDelay() {
@@ -3078,6 +3088,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       iframe.style.border = "none";
       iframe.style.overflow = "hidden";
     });
+    this.shouldShowContent = false;
   }
 
   private hideLoadingMessage() {

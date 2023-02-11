@@ -371,6 +371,93 @@ export class AnnotationModule implements ReaderModule {
     }
   }
 
+  public getAnnotationFromHighlight(
+    highlight: IHighlight
+  ): Annotation | undefined {
+    if (this.annotator) {
+      var tocItem = this.publication.getTOCItem(
+        this.delegate.currentChapterLink.href
+      );
+      if (this.delegate.currentTocUrl) {
+        tocItem = this.publication.getTOCItem(this.delegate.currentTocUrl);
+      }
+
+      if (tocItem === undefined) {
+        tocItem = this.publication.getTOCItemAbsolute(
+          this.delegate.currentChapterLink.href
+        );
+      }
+
+      const bookmarkPosition = this.delegate.view?.getCurrentPosition();
+
+      let doc = this.delegate.iframes[0].contentDocument;
+      if (doc) {
+        const body = HTMLUtilities.findRequiredIframeElement(
+          doc,
+          "body"
+        ) as HTMLBodyElement;
+
+        const progression = highlight.position
+          ? highlight.position / body.scrollHeight
+          : bookmarkPosition;
+
+        const id: string = uuid();
+        let annotation: Annotation | undefined;
+
+        if (tocItem) {
+          let href = tocItem.Href;
+          if (href.indexOf("#") > 0) {
+            href = href.slice(0, href.indexOf("#"));
+          }
+
+          if (
+            (this.rights.autoGeneratePositions && this.publication.positions) ||
+            this.publication.positions
+          ) {
+            const positions = this.publication.positionsByHref(
+              this.publication.getRelativeHref(
+                this.delegate.currentChapterLink.href
+              )
+            );
+            const positionIndex = Math.ceil(
+              (progression ?? 0) * (positions.length - 1)
+            );
+            const locator = positions[positionIndex];
+
+            annotation = {
+              ...locator,
+              id: id,
+              href: href,
+              created: new Date(),
+              title: this.delegate.currentChapterLink.title,
+              highlight: highlight,
+              text: {
+                highlight: highlight.selectionInfo.cleanText,
+              },
+            };
+          } else {
+            annotation = {
+              id: id,
+              href: href,
+              locations: {
+                progression: progression,
+              },
+              created: new Date(),
+              type: this.delegate.currentChapterLink.type,
+              title: this.delegate.currentChapterLink.title,
+              highlight: highlight,
+              text: {
+                highlight: highlight.selectionInfo.cleanText,
+              },
+            };
+          }
+        }
+        if (annotation) return annotation;
+      }
+    }
+    return undefined;
+  }
+
   // @ts-ignore
   public async saveAnnotation(highlight: IHighlight): Promise<Annotation> {
     if (this.annotator) {
@@ -572,7 +659,8 @@ export class AnnotationModule implements ReaderModule {
                     let icon: HTMLElement = document.createElement("i");
                     icon.innerHTML = "sticky_note_2";
                     icon.className = "material-icons";
-                    icon.style.color = annotation.highlight.color;
+                    if (icon.style)
+                      icon.style.color = annotation.highlight.color;
 
                     div.appendChild(icon);
 
@@ -686,7 +774,8 @@ export class AnnotationModule implements ReaderModule {
       ) as HTMLDivElement;
       if (
         this.delegate.view?.isScrollMode() &&
-        this.properties?.enableComments
+        this.properties?.enableComments &&
+        this.commentGutter
       ) {
         this.commentGutter.style.removeProperty("display");
       } else {
@@ -777,7 +866,8 @@ export class AnnotationModule implements ReaderModule {
                   this.scrollToHighlight(rangeRepresentation.highlight.id);
                 }
               );
-              this.commentGutter?.appendChild(highlightAreaIcon);
+              if (this.commentGutter)
+                this.commentGutter.appendChild(highlightAreaIcon);
             });
           }
         }

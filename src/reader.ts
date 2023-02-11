@@ -16,7 +16,12 @@
  * Developed on behalf of: NYPL, Bokbasen AS (https://www.bokbasen.no), CAST (http://www.cast.org)
  * Licensed to: NYPL, Bokbasen AS and CAST under one or more contributor license agreements.
  */
-import { Annotation, Bookmark, Locator } from "./model/Locator";
+import {
+  Annotation,
+  AnnotationMarker,
+  Bookmark,
+  Locator,
+} from "./model/Locator";
 import { Publication } from "./model/Publication";
 import { UserSettingsIncrementable } from "./model/user-settings/UserProperties";
 import { UserSettings } from "./model/user-settings/UserSettings";
@@ -24,6 +29,8 @@ import { AnnotationModule } from "./modules/AnnotationModule";
 import { BookmarkModule } from "./modules/BookmarkModule";
 import { TextHighlighter } from "./modules/highlight/TextHighlighter";
 import { MediaOverlayModule } from "./modules/mediaoverlays/MediaOverlayModule";
+import { SHA256 } from "jscrypto/es6/SHA256";
+
 import {
   MediaOverlaySettings,
   IMediaOverlayUserSettings,
@@ -57,6 +64,9 @@ import { HistoryModule } from "./modules/history/HistoryModule";
 import CitationModule from "./modules/citation/CitationModule";
 import { TaJsonDeserialize } from "./utils/JsonUtil";
 
+import { ISelectionInfo } from "./modules/highlight/common/selection";
+import { HighlightType } from "./modules/highlight/common/highlight";
+
 /**
  * A class that, once instantiated using the public `.build` method,
  * is the primary interface into the D2 Reader.
@@ -88,8 +98,9 @@ export default class D2Reader {
     private readonly citationModule?: CitationModule
   ) {}
 
-  addEventListener() {
-    this.navigator.addListener(arguments[0], arguments[1]);
+  addEventListener(arg1?: any, arg2?: any) {
+    if (!arg1 && !arg2) this.navigator.addListener(arguments[0], arguments[1]);
+    if (arg1 && arg2) this.navigator.addListener(arg1, arg2);
   }
 
   /**
@@ -201,7 +212,7 @@ export default class D2Reader {
           : "reflowable",
     });
 
-    // Navigator
+    // Navigator //NOTE - 🔴
     const navigator = await IFrameNavigator.create({
       mainElement: mainElement,
       headerMenu: headerMenu,
@@ -227,6 +238,7 @@ export default class D2Reader {
     const highlighter = await TextHighlighter.create({
       delegate: navigator,
       layerSettings: layers,
+      mouseEventHandler: initialConfig.mouseEventHandlers,
       ...initialConfig.highlighter,
     });
 
@@ -243,7 +255,7 @@ export default class D2Reader {
         })
       : undefined;
 
-    // Annotation Module
+    // Annotation Module //NOTE - 🔴
     const annotationModule = rights.enableAnnotations
       ? await AnnotationModule.create({
           annotator: annotator,
@@ -336,6 +348,7 @@ export default class D2Reader {
         })
       : undefined;
 
+    //NOTE - 🔴
     const enablePageBreaks = rights.enablePageBreaks;
     const pageBreakModule =
       enablePageBreaks && publication.isReflowable
@@ -465,6 +478,47 @@ export default class D2Reader {
     return (await this.annotationModule?.addAnnotation(highlight)) ?? false;
   };
 
+  /** Add Highlight */
+  addHighlight = async (
+    selectionInfo: ISelectionInfo,
+    color: string | undefined
+  ) => {
+    if (!color) color = "#fdff32";
+    return (
+      (await this.highlighter.createHighlight(
+        null,
+        selectionInfo,
+        color,
+        false,
+        AnnotationMarker.Highlight,
+        undefined,
+        undefined,
+        undefined,
+        HighlightType.Search
+      )) ?? false
+    );
+  };
+
+  removeSearchHighlights = () => {
+    this.highlighter.destroyHighlights(HighlightType.Search);
+  };
+
+  /** remove Highlight */
+  removeHighlight = (selectionInfo: ISelectionInfo) => {
+    const uniqueStr = `${selectionInfo.rangeInfo.startContainerElementCssSelector}${selectionInfo.rangeInfo.startContainerChildTextNodeIndex}${selectionInfo.rangeInfo.startOffset}${selectionInfo.rangeInfo.endContainerElementCssSelector}${selectionInfo.rangeInfo.endContainerChildTextNodeIndex}${selectionInfo.rangeInfo.endOffset}`;
+    const sha256Hex = SHA256.hash(uniqueStr);
+    const id = "R2_DEFINITION_" + sha256Hex;
+    this.highlighter.destroyHighlight(
+      this.navigator.iframes[0].contentDocument,
+      id
+    );
+  };
+
+  //** returns currently selected text information */
+  getCurrentSelection = () => {
+    return this.highlighter.getAnnotationForCurrentSelectedFragment();
+  };
+
   /** Hide Annotation Layer */
   hideAnnotationLayer = () => {
     return this.annotationModule?.hideAnnotationLayer();
@@ -529,8 +583,33 @@ export default class D2Reader {
   /** Search by term and current resource or entire book <br>
    * current = true, will search only current resource <br>
    * current = false, will search entire publication */
-  search = async (term: string, current: boolean) => {
-    return (await this.searchModule?.search(term, current)) ?? [];
+  search = async (
+    term: string,
+    current: boolean,
+    chapterLink?: string,
+    allChapterLinks?: string[]
+  ) => {
+    return await this.searchModule?.search(
+      term,
+      current,
+      chapterLink,
+      allChapterLinks
+    );
+  };
+  searchAndPaintChapter = async (
+    term: string,
+    index: number = 0,
+    callback: (result: any) => any,
+    chapterLink?: string,
+    updateSearch?: boolean
+  ) => {
+    await this.searchModule?.searchAndPaintChapter(
+      term,
+      index,
+      callback,
+      chapterLink,
+      updateSearch
+    );
   };
   goToSearchIndex = async (href: string, index: number, current: boolean) => {
     if (this.navigator.rights.enableSearch) {
@@ -562,6 +641,9 @@ export default class D2Reader {
   }
   get publicationLanguage() {
     return this.navigator.publication.Metadata.Language;
+  }
+  get shouldShowContent() {
+    return this.navigator.shouldShowContent;
   }
 
   /**

@@ -292,20 +292,98 @@ export class SearchModule implements ReaderModule {
     }
   }
 
+  async searchAndPaintTermInChapter(
+    term: string,
+    index: number = 0,
+    chapterLink?: string
+  ) {
+    let tocItem;
+    if (chapterLink) {
+      tocItem = {
+        Href: chapterLink,
+      };
+    } else {
+      const linkHref = this.publication.getAbsoluteHref(
+        this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
+      );
+
+      tocItem = this.publication.getTOCItem(linkHref);
+      if (tocItem === null) {
+        tocItem = this.publication.readingOrder[
+          this.delegate.currentResource() ?? 0
+        ];
+      }
+      let localSearchResultChapter: any = [];
+
+      // clear search results // needs more works
+      this.highlighter?.destroyHighlights(HighlightType.Search);
+      if (this.delegate.rights.enableSearch) {
+        this.drawSearch();
+      }
+      let i = 0;
+      if (tocItem) {
+        let doc = this.delegate.iframes[0].contentDocument;
+        if (doc) {
+          if (tocItem) {
+            searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
+              (result) => {
+                result.forEach((searchItem) => {
+                  let selectionInfo = {
+                    rangeInfo: searchItem.rangeInfo,
+                  };
+                  setTimeout(() => {
+                    let highlight;
+                    if (i === index) {
+                      highlight = this.createSearchHighlight(
+                        selectionInfo,
+                        this.properties?.current!!
+                      );
+                      this.jumpToMark(index);
+                    } else {
+                      highlight = this.createSearchHighlight(
+                        selectionInfo,
+                        this.properties?.color!!
+                      );
+                    }
+                    searchItem.highlight = highlight;
+                    localSearchResultChapter.push(searchItem);
+
+                    this.currentSearchHighlights.push(highlight);
+                    i++;
+                  }, 500);
+                });
+              }
+            );
+          }
+        }
+      }
+    }
+  }
+
   // Search Current Resource
   async searchAndPaintChapter(
     term: string,
     index: number = 0,
-    callback: (result: any) => any
+    callback: (result: any) => any,
+    chapterLink?: string,
+    updateSearch?: boolean
   ) {
-    const linkHref = this.publication.getAbsoluteHref(
-      this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
-    );
-    let tocItem = this.publication.getTOCItem(linkHref);
-    if (tocItem === null) {
-      tocItem = this.publication.readingOrder[
-        this.delegate.currentResource() ?? 0
-      ];
+    let tocItem;
+    if (chapterLink) {
+      tocItem = {
+        Href: chapterLink,
+      };
+    } else {
+      const linkHref = this.publication.getAbsoluteHref(
+        this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
+      );
+
+      tocItem = this.publication.getTOCItem(linkHref);
+      if (tocItem === null) {
+        tocItem = this.publication.readingOrder[
+          this.delegate.currentResource() ?? 0
+        ];
+      }
     }
     let localSearchResultChapter: any = [];
 
@@ -341,7 +419,8 @@ export class SearchModule implements ReaderModule {
                   }
                   searchItem.highlight = highlight;
                   localSearchResultChapter.push(searchItem);
-                  this.currentChapterSearchResult.push(searchItem);
+                  if (updateSearch)
+                    this.currentChapterSearchResult.push(searchItem);
                   this.currentSearchHighlights.push(highlight);
                   i++;
                 }, 500);
@@ -398,20 +477,27 @@ export class SearchModule implements ReaderModule {
     this.highlighter?.destroyHighlights(HighlightType.Search);
   }
 
-  async search(term: string, current: boolean): Promise<any> {
+  async search(
+    term: string,
+    current: boolean,
+    chapterLink?: string,
+    allChapterLinks?: string[]
+  ): Promise<any> {
     this.currentChapterSearchResult = [];
     this.currentSearchHighlights = [];
     this.bookSearchResult = [];
-
     reset();
-    await this.searchAndPaintChapter(term, 0, async () => {});
+
+    if (chapterLink) {
+      await this.searchAndPaintChapter(term, 0, async () => {}, chapterLink);
+    } else {
+      await this.searchAndPaintChapter(term, 0, async () => {});
+    }
 
     if (current) {
-      await this.searchBook(term);
-      return await this.searchChapter(term);
+      return await this.searchChapter(term, chapterLink);
     } else {
-      await this.searchChapter(term);
-      return await this.searchBook(term);
+      return await this.searchBook(term, allChapterLinks);
     }
   }
   async goToSearchID(href: string, index: number, current: boolean) {
@@ -700,70 +786,74 @@ export class SearchModule implements ReaderModule {
       return Array.from(map.values());
     }
   }
+
+  searchContent = (content, term, localSearchResultBook, tocItem) => {
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(
+      this.delegate.requestConfig?.encoded
+        ? this.decodeBase64(content)
+        : content,
+      "application/xhtml+xml"
+    );
+    if (tocItem) {
+      searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
+        (result) => {
+          result.forEach((searchItem) => {
+            localSearchResultBook.push(searchItem);
+            this.bookSearchResult.push(searchItem);
+          });
+        }
+      );
+    }
+  };
+
   // Search Entire Book
-  async searchBook(term: string): Promise<any> {
+  async searchBook(term: string, allChapterLinks?: string[]): Promise<any> {
     this.bookSearchResult = [];
 
     let localSearchResultBook: any = [];
-    for (let index = 0; index < this.publication.readingOrder.length; index++) {
-      const linkHref = this.publication.getAbsoluteHref(
-        this.publication.readingOrder
-          ? this.publication.readingOrder[index].Href
-          : ""
-      );
+    if (allChapterLinks) {
+      for (let index = 0; index < allChapterLinks.length; index++) {
+        const href = allChapterLinks[index];
+        const tocItem = {
+          Href: href,
+        };
 
-      let tocItem = this.publication.getTOCItem(linkHref);
-      if (tocItem === undefined && this.publication.readingOrder) {
-        tocItem = this.publication.readingOrder[index];
-      }
-      if (tocItem) {
-        let href = this.publication.getAbsoluteHref(tocItem.Href);
-        if (this.delegate.api?.getContent) {
-          await this.delegate.api?.getContent(href).then((content) => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(
-              this.delegate.requestConfig?.encoded
-                ? this.decodeBase64(content)
-                : content,
-              "application/xhtml+xml"
-            );
-            if (tocItem) {
-              searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
-                (result) => {
-                  result.forEach((searchItem) => {
-                    localSearchResultBook.push(searchItem);
-                    this.bookSearchResult.push(searchItem);
-                  });
-                }
-              );
-            }
+        await fetch(href, this.delegate.requestConfig)
+          .then((r) => r.text())
+          .then((data) => {
+            this.searchContent(data, term, localSearchResultBook, tocItem);
           });
-        } else {
-          await fetch(href, this.delegate.requestConfig)
-            .then((r) => r.text())
-            .then(async (data) => {
-              let parser = new DOMParser();
-              let doc = parser.parseFromString(
-                this.delegate.requestConfig?.encoded
-                  ? this.decodeBase64(data)
-                  : data,
-                "application/xhtml+xml"
-              );
-              if (tocItem) {
-                searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
-                  (result) => {
-                    result.forEach((searchItem) => {
-                      localSearchResultBook.push(searchItem);
-                      this.bookSearchResult.push(searchItem);
-                    });
-                  }
-                );
-              }
-            });
+        if (index === this.publication.readingOrder.length - 1) {
+          return localSearchResultBook;
         }
       }
-      if (index === this.publication.readingOrder.length - 1) {
-        return localSearchResultBook;
+    } else {
+      for (
+        let index = 0;
+        index < this.publication.readingOrder.length;
+        index++
+      ) {
+        const linkHref = this.publication.getAbsoluteHref(
+          this.publication.readingOrder
+            ? this.publication.readingOrder[index].Href
+            : ""
+        );
+        let tocItem = this.publication.getTOCItem(linkHref);
+        if (tocItem === undefined && this.publication.readingOrder) {
+          tocItem = this.publication.readingOrder[index];
+        }
+        if (tocItem) {
+          let href = this.publication.getAbsoluteHref(tocItem.Href);
+          await fetch(href, this.delegate.requestConfig)
+            .then((r) => r.text())
+            .then((data) => {
+              this.searchContent(data, term, localSearchResultBook, tocItem);
+            });
+        }
+        if (index === this.publication.readingOrder.length - 1) {
+          return localSearchResultBook;
+        }
       }
     }
   }
@@ -779,60 +869,34 @@ export class SearchModule implements ReaderModule {
     return decoder.decode(bytes);
   }
 
-  async searchChapter(term: string): Promise<any> {
+  async searchChapter(term: string, chapterLink?: string): Promise<any> {
     let localSearchResultBook: any = [];
-    const linkHref = this.publication.getAbsoluteHref(
-      this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
-    );
-    let tocItem = this.publication.getTOCItem(linkHref);
-    if (tocItem === null) {
-      tocItem = this.publication.readingOrder[
-        this.delegate.currentResource() ?? 0
-      ];
-    }
+    if (chapterLink) {
+      const tocItem = { Href: chapterLink };
+      const href = this.publication.getAbsoluteHref(tocItem.Href);
 
-    if (tocItem) {
-      let href = this.publication.getAbsoluteHref(tocItem.Href);
-      if (this.delegate.api?.getContent) {
-        await this.delegate.api?.getContent(href).then((content) => {
-          let parser = new DOMParser();
-          let doc = parser.parseFromString(
-            this.delegate.requestConfig?.encoded
-              ? this.decodeBase64(content)
-              : content,
-            "application/xhtml+xml"
-          );
-          if (tocItem) {
-            searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
-              (result) => {
-                result.forEach((searchItem) => {
-                  localSearchResultBook.push(searchItem);
-                });
-              }
-            );
-          }
+      await fetch(href, this.delegate.requestConfig)
+        .then((r) => r.text())
+        .then(async (data) => {
+          this.searchContent(data, term, localSearchResultBook, tocItem);
         });
-      } else {
+    } else {
+      const linkHref = this.publication.getAbsoluteHref(
+        this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
+      );
+      let tocItem = this.publication.getTOCItem(linkHref);
+      if (!tocItem) {
+        tocItem = this.publication.readingOrder[
+          this.delegate.currentResource() ?? 0
+        ];
+      }
+      if (tocItem) {
+        const href = this.publication.getAbsoluteHref(tocItem.Href);
+
         await fetch(href, this.delegate.requestConfig)
           .then((r) => r.text())
           .then(async (data) => {
-            // ({ data, tocItem });
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(
-              this.delegate.requestConfig?.encoded
-                ? this.decodeBase64(data)
-                : data,
-              "application/xhtml+xml"
-            );
-            if (tocItem) {
-              searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
-                (result) => {
-                  result.forEach((searchItem) => {
-                    localSearchResultBook.push(searchItem);
-                  });
-                }
-              );
-            }
+            this.searchContent(data, term, localSearchResultBook, tocItem);
           });
       }
     }
