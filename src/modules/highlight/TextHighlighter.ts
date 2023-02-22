@@ -986,7 +986,10 @@ export class TextHighlighter {
           if (trimmed) {
             range.setStart(
               selection.anchorNode,
-              selection.anchorOffset + startOffsetTemp
+              selection.anchorOffset + startOffsetTemp <
+                selection.anchorNode.length
+                ? selection.anchorOffset + startOffsetTemp
+                : 0
             );
             range.setEnd(
               selection.focusNode,
