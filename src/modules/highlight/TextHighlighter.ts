@@ -999,13 +999,10 @@ export class TextHighlighter {
           let endOffset;
           if (trimmed) {
             endOffset = selection.focusOffset - endOffsetTemp;
-            selection.collapse(
-              selection.anchorNode,
-              selection.anchorOffset + startOffsetTemp
-            );
+            selection.collapse(selection.anchorNode, 0);
           } else {
             endOffset = selection.focusOffset;
-            selection.collapse(selection.anchorNode, selection.anchorOffset);
+            selection.collapse(selection.anchorNode, 0);
           }
 
           let direction = ["forward", "backward"];
