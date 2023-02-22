@@ -990,7 +990,9 @@ export class TextHighlighter {
             );
             range.setEnd(
               selection.focusNode,
-              selection.focusOffset - endOffsetTemp
+              selection.focusOffset - endOffsetTemp < selection.focusNode.length
+                ? selection.focusOffset - endOffsetTemp
+                : 0
             );
           } else {
             range.setStart(selection.anchorNode, selection.anchorOffset);
