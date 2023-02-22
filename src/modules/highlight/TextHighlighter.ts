@@ -984,19 +984,8 @@ export class TextHighlighter {
           // Detect if selection is backwards
           let range = document.createRange();
           if (trimmed) {
-            range.setStart(
-              selection.anchorNode,
-              selection.anchorOffset + startOffsetTemp <
-                selection.anchorNode.length
-                ? selection.anchorOffset + startOffsetTemp
-                : 0
-            );
-            range.setEnd(
-              selection.focusNode,
-              selection.focusOffset - endOffsetTemp < selection.focusNode.length
-                ? selection.focusOffset - endOffsetTemp
-                : 0
-            );
+            range.setStart(selection.anchorNode, 0);
+            range.setEnd(selection.focusNode, 0);
           } else {
             range.setStart(selection.anchorNode, selection.anchorOffset);
             range.setEnd(selection.focusNode, selection.focusOffset);
