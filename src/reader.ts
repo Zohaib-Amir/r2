@@ -646,6 +646,9 @@ export default class D2Reader {
     return this.navigator.shouldShowContent;
   }
 
+  getShouldShowContent() {
+    return this.navigator.shouldShowContent;
+  }
   /**
    * Settings
    */
