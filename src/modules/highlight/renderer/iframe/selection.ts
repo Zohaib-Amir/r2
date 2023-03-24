@@ -35,8 +35,6 @@ export function getCurrentSelectionInfo(
   getCssSelector: (element: Element) => string | undefined
 ): ISelectionInfo | undefined {
   const selection = win ? win.getSelection() : null;
-  throw new Error(JSON.stringify(selection));
-
   if (!selection) {
     return undefined;
   }
@@ -46,7 +44,7 @@ export function getCurrentSelectionInfo(
   }
 
   const rawText = selection.toString();
-  const cleanText = rawText;
+  const cleanText = rawText.trim().replace(/\n/g, " ").replace(/\s\s+/g, " ");
   if (cleanText.length === 0) {
     log.log("^^^ SELECTION TEXT EMPTY.");
     return undefined;
