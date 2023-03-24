@@ -30,19 +30,33 @@ export function clearCurrentSelection(win: Window) {
   selection.removeAllRanges();
 }
 
+/**
+ * Retrieves the current selection information from a window, including the range and text.
+ * This function first checks if a valid selection exists, and then processes and normalizes
+ * the selection range. If a valid range is found, it is converted into a rangeInfo object
+ * containing CSS selectors for the start and end containers.
+ *
+ * @param win - The window object containing the selection.
+ * @param getCssSelector - A function that returns a CSS selector string for a given Element.
+ * @returns An object with selection information (ISelectionInfo) or undefined if no valid selection is found.
+ */
 export function getCurrentSelectionInfo(
   win: Window,
   getCssSelector: (element: Element) => string | undefined
 ): ISelectionInfo | undefined {
+  // Retrieve the selection from the window.
   const selection = win ? win.getSelection() : null;
   if (!selection) {
     return undefined;
   }
+
+  // If the selection is collapsed (empty), log and return undefined.
   if (selection.isCollapsed) {
     log.log("^^^ SELECTION COLLAPSED.");
     return undefined;
   }
 
+  // Extract the raw text from the selection and clean it by removing unnecessary spaces and newlines.
   const rawText = selection.toString();
   const cleanText = rawText.trim().replace(/\n/g, " ").replace(/\s\s+/g, " ");
   if (cleanText.length === 0) {
@@ -50,9 +64,12 @@ export function getCurrentSelectionInfo(
     return undefined;
   }
 
+  // If either anchorNode or focusNode are missing, return undefined.
   if (!selection.anchorNode || !selection.focusNode) {
     return undefined;
   }
+
+  // Get the range of the selection; if there's only one range, use it, otherwise create an ordered range.
   const r =
     selection.rangeCount === 1
       ? selection.getRangeAt(0)
@@ -62,12 +79,17 @@ export function getCurrentSelectionInfo(
           selection.focusNode,
           selection.focusOffset
         );
+
+  // If the range is not found or collapsed, log and return undefined.
   if (!r || r.collapsed) {
     log.log("$$$$$$$$$$$$$$$$$ CANNOT GET NON-COLLAPSED SELECTION RANGE?!");
     return undefined;
   }
 
+  // Normalize the range to ensure it's in a consistent format.
   const range = normalizeRange(r);
+
+  // Log any differences between the original and normalized range for debugging purposes.
   if (range.startContainer !== r.startContainer) {
     log.log(
       ">>>>>>>>>>>>>>>>>>>>>>> SELECTION RANGE NORMALIZE diff: startContainer"
@@ -95,15 +117,20 @@ export function getCurrentSelectionInfo(
     log.log(`${range.endOffset} !== ${r.endOffset}`);
   }
 
+  // Convert the normalized range into a rangeInfo object containing CSS selectors.
   const rangeInfo = convertRange(range, getCssSelector);
   if (!rangeInfo) {
     log.log("^^^ SELECTION RANGE INFO FAIL?!");
     return undefined;
   }
 
+  // Uncomment the following lines if you want to remove all ranges from the selection
+  // and re-add the normalized range. This can be useful for adjusting the selection to
+  // match the normalized range, but it may also cause unexpected behavior in some cases.
   // selection.removeAllRanges();
-  //     // selection.addRange(range);
+  // selection.addRange(range);
 
+  // Return an object containing the rangeInfo, cleanText, rawText, and the normalized range.
   return { rangeInfo, cleanText, rawText, range };
 }
 
@@ -354,7 +381,7 @@ function getCommonAncestorElement(
 //      - Set the end boundary to be after the Node.
 //  @param {Range} range - DOM Range instance to "normalize"
 //  @return {Range} returns a "normalized" clone of `range`
-export function normalizeRange(r: Range) {
+export function normalizeRange_OLD(r: Range) {
   const range = r.cloneRange(); // new Range(); // document.createRange()
 
   let sc = range.startContainer;
@@ -422,6 +449,68 @@ export function normalizeRange(r: Range) {
   }
 
   return range;
+}
+
+export function normalizeRange(range: Range): Range {
+  let { startContainer, endContainer, startOffset, endOffset } = range;
+
+  // Normalize the start container.
+  if (startContainer.nodeType !== Node.TEXT_NODE) {
+    const previousTextNode = findPreviousTextNode(startContainer);
+
+    if (previousTextNode) {
+      startContainer = previousTextNode;
+      startOffset = previousTextNode.textContent!.length;
+    } else {
+      // No previous text node, so move to the next one.
+      const nextTextNode = findNextTextNode(startContainer);
+      if (nextTextNode) {
+        startContainer = nextTextNode;
+        startOffset = 0;
+      }
+    }
+  }
+
+  // Normalize the end container.
+  if (endContainer.nodeType !== Node.TEXT_NODE) {
+    const previousTextNode = findPreviousTextNode(endContainer);
+
+    if (previousTextNode) {
+      endContainer = previousTextNode;
+      endOffset = previousTextNode.textContent!.length;
+    } else {
+      // No previous text node, so move to the next one.
+      const nextTextNode = findNextTextNode(endContainer);
+      if (nextTextNode) {
+        endContainer = nextTextNode;
+        endOffset = 0;
+      }
+    }
+  }
+
+  return range;
+}
+
+function findPreviousTextNode(node: Node): Node | null {
+  while (node.previousSibling) {
+    node = node.previousSibling;
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node;
+    }
+  }
+
+  return null;
+}
+
+function findNextTextNode(node: Node): Node | null {
+  while (node.nextSibling) {
+    node = node.nextSibling;
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node;
+    }
+  }
+
+  return null;
 }
 
 // Return the next Node in a document order traversal.
