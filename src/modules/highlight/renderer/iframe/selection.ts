@@ -44,7 +44,11 @@ export function getCurrentSelectionInfo(
   }
 
   const rawText = selection.toString();
-  const cleanText = rawText.trim().replace(/\n/g, " ").replace(/\s\s+/g, " ");
+  const cleanText = rawText
+    .trim()
+    .replace(/\n/g, " ")
+    .replace(/([.,!?])\s+/g, "$1 ")
+    .replace(/\s\s+/g, " ");
   if (cleanText.length === 0) {
     log.log("^^^ SELECTION TEXT EMPTY.");
     return undefined;
