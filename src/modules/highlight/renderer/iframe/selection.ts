@@ -35,6 +35,8 @@ export function getCurrentSelectionInfo(
   getCssSelector: (element: Element) => string | undefined
 ): ISelectionInfo | undefined {
   const selection = win ? win.getSelection() : null;
+  throw new Error(JSON.stringify(selection));
+
   if (!selection) {
     return undefined;
   }
