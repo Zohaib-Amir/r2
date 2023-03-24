@@ -381,7 +381,7 @@ function getCommonAncestorElement(
 //      - Set the end boundary to be after the Node.
 //  @param {Range} range - DOM Range instance to "normalize"
 //  @return {Range} returns a "normalized" clone of `range`
-export function normalizeRange_OLD(r: Range) {
+export function normalizeRange(r: Range) {
   const range = r.cloneRange(); // new Range(); // document.createRange()
 
   let sc = range.startContainer;
@@ -449,68 +449,6 @@ export function normalizeRange_OLD(r: Range) {
   }
 
   return range;
-}
-
-export function normalizeRange(range: Range): Range {
-  let { startContainer, endContainer, startOffset, endOffset } = range;
-
-  // Normalize the start container.
-  if (startContainer.nodeType !== Node.TEXT_NODE) {
-    const previousTextNode = findPreviousTextNode(startContainer);
-
-    if (previousTextNode) {
-      startContainer = previousTextNode;
-      startOffset = previousTextNode.textContent!.length;
-    } else {
-      // No previous text node, so move to the next one.
-      const nextTextNode = findNextTextNode(startContainer);
-      if (nextTextNode) {
-        startContainer = nextTextNode;
-        startOffset = 0;
-      }
-    }
-  }
-
-  // Normalize the end container.
-  if (endContainer.nodeType !== Node.TEXT_NODE) {
-    const previousTextNode = findPreviousTextNode(endContainer);
-
-    if (previousTextNode) {
-      endContainer = previousTextNode;
-      endOffset = previousTextNode.textContent!.length;
-    } else {
-      // No previous text node, so move to the next one.
-      const nextTextNode = findNextTextNode(endContainer);
-      if (nextTextNode) {
-        endContainer = nextTextNode;
-        endOffset = 0;
-      }
-    }
-  }
-
-  return range;
-}
-
-function findPreviousTextNode(node: Node): Node | null {
-  while (node.previousSibling) {
-    node = node.previousSibling;
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node;
-    }
-  }
-
-  return null;
-}
-
-function findNextTextNode(node: Node): Node | null {
-  while (node.nextSibling) {
-    node = node.nextSibling;
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node;
-    }
-  }
-
-  return null;
 }
 
 // Return the next Node in a document order traversal.
