@@ -945,7 +945,7 @@ export class TextHighlighter {
   showTool = debounce(
     (b: boolean) => {
       if (!this.isAndroid()) {
-        // this.snapSelectionToWord(b);
+        this.snapSelectionToWord(b);
       }
       this.toolboxShow();
     },
@@ -978,7 +978,7 @@ export class TextHighlighter {
           var regex_symbols = /[-!$%^&*()_+|~=`{}[\]:/;<>?,.@#]/;
           text = text.replace(regex_symbols, "");
           startOffsetTemp = length - text.trimStart().length;
-          text = removeTrailingPunctuation(text);
+          // text = removeTrailingPunctuation(text);
           endOffsetTemp = length - text.trimEnd().length;
 
           // Detect if selection is backwards
