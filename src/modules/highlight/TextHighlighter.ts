@@ -958,7 +958,7 @@ export class TextHighlighter {
     if (doc) {
       let selection = self.dom(doc.body)?.getSelection();
       // Check for existence of window.getSelection() and that it has a
-      // modify() method. IE 9 has both selection APIs but no modify() method.
+      // modify() method. IE 9 has both selection APIs but no modify() method
       if (self.dom(doc.body)) {
         if (selection && !selection?.isCollapsed) {
           let text = selection.toString();
