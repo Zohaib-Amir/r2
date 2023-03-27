@@ -945,7 +945,7 @@ export class TextHighlighter {
   showTool = debounce(
     (b: boolean) => {
       if (!this.isAndroid()) {
-        this.snapSelectionToWord(b);
+        // this.snapSelectionToWord(b);
       }
       this.toolboxShow();
     },
