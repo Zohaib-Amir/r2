@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2020 DITA (AM Consulting LLC)
  *
@@ -716,51 +717,52 @@ export class SearchModule implements ReaderModule {
       if (tocItem === undefined && this.publication.readingOrder) {
         tocItem = this.publication.readingOrder[index];
       }
-      if (tocItem) {
-        let href = this.publication.getAbsoluteHref(tocItem.Href);
-        if (this.delegate.api?.getContent) {
-          await this.delegate.api?.getContent(href).then((content) => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(
-              this.delegate.requestConfig?.encoded
-                ? this.decodeBase64(content)
-                : content,
-              "application/xhtml+xml"
-            );
-            if (tocItem) {
-              searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
-                (result) => {
-                  result.forEach((searchItem) => {
-                    localSearchResultBook.push(searchItem);
-                    this.bookSearchResult.push(searchItem);
-                  });
+      if (this.delegate.api?.getContent) {
+        await this.delegate.api?.getContent(linkHref).then((content) => {
+          let parser = new DOMParser();
+          let doc = parser.parseFromString(
+            this.delegate.requestConfig?.encoded
+              ? this.decodeBase64(content)
+              : content,
+            "application/xhtml+xml"
+          );
+
+          // Define a recursive function that adds an id attribute to each word
+          function addIds(node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+              let words = node.textContent.trim().split(/\s+/);
+              for (let i = 0; i < words.length; i++) {
+                let word = words[i];
+                if (word.length > 0) {
+                  let span = document.createElement("span");
+                  span.setAttribute("id", "word_" + i);
+                  span.textContent = word;
+                  node.parentNode.insertBefore(span, node.nextSibling);
                 }
-              );
-            }
-          });
-        } else {
-          await fetch(href, this.delegate.requestConfig)
-            .then((r) => r.text())
-            .then(async (data) => {
-              let parser = new DOMParser();
-              let doc = parser.parseFromString(
-                this.delegate.requestConfig?.encoded
-                  ? this.decodeBase64(data)
-                  : data,
-                "application/xhtml+xml"
-              );
-              if (tocItem) {
-                searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
-                  (result) => {
-                    result.forEach((searchItem) => {
-                      localSearchResultBook.push(searchItem);
-                      this.bookSearchResult.push(searchItem);
-                    });
-                  }
-                );
               }
-            });
-        }
+              node.parentNode.removeChild(node);
+            } else {
+              for (let child of node.childNodes) {
+                addIds(child);
+              }
+            }
+          }
+
+          // Call the addIds function with the root node of the document
+          addIds(doc.documentElement);
+
+          // Perform the search using the modified document object
+          if (tocItem) {
+            searchDocDomSeek(term, doc, tocItem.Href, tocItem.Title).then(
+              (result) => {
+                result.forEach((searchItem) => {
+                  localSearchResultBook.push(searchItem);
+                  this.bookSearchResult.push(searchItem);
+                });
+              }
+            );
+          }
+        });
       }
       if (index === this.publication.readingOrder.length - 1) {
         return localSearchResultBook;

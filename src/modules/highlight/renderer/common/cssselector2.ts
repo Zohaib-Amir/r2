@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2020 DITA (AM Consulting LLC)
  *
