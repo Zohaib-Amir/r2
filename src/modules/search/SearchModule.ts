@@ -502,6 +502,9 @@ export class SearchModule implements ReaderModule {
       else
       return await this.searchChapter(term, chapterLink);
     } else {
+      if(useGetContextApi)
+      return await this.searchBook(term, allChapterLinks,useGetContextApi);
+      else
       return await this.searchBook(term, allChapterLinks);
     }
   }
@@ -813,7 +816,7 @@ export class SearchModule implements ReaderModule {
   };
 
   // Search Entire Book
-  async searchBook(term: string, allChapterLinks?: string[]): Promise<any> {
+  async searchBook(term: string, allChapterLinks?: string[], useGetContentApi?: boolean): Promise<any> {
     this.bookSearchResult = [];
 
     let localSearchResultBook: any = [];
@@ -823,12 +826,16 @@ export class SearchModule implements ReaderModule {
         const tocItem = {
           Href: href,
         };
-
+        if (useGetContentApi && this.delegate.api?.getContent) {
+          const data = await this.delegate.api?.getContent(href);
+          this.searchContent(data, term, localSearchResultBook, tocItem);
+      } else {
         await fetch(href, this.delegate.requestConfig)
           .then((r) => r.text())
           .then((data) => {
             this.searchContent(data, term, localSearchResultBook, tocItem);
           });
+        }
         if (index === this.publication.readingOrder.length - 1) {
           return localSearchResultBook;
         }
