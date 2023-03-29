@@ -874,6 +874,7 @@ export class SearchModule implements ReaderModule {
     return decoder.decode(bytes);
   }
 
+  
   async searchChapter(
     term: string,
     chapterLink?: string,
