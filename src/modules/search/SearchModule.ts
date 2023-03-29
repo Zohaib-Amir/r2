@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2020 DITA (AM Consulting LLC)
  *
@@ -481,7 +482,8 @@ export class SearchModule implements ReaderModule {
     term: string,
     current: boolean,
     chapterLink?: string,
-    allChapterLinks?: string[]
+    useGetContextApi?: boolean,
+    allChapterLinks?: string[],
   ): Promise<any> {
     this.currentChapterSearchResult = [];
     this.currentSearchHighlights = [];
@@ -495,6 +497,9 @@ export class SearchModule implements ReaderModule {
     }
 
     if (current) {
+      if(useGetContextApi)
+      return await this.searchChapter(term, chapterLink, useGetContextApi);
+      else
       return await this.searchChapter(term, chapterLink);
     } else {
       return await this.searchBook(term, allChapterLinks);
@@ -869,17 +874,25 @@ export class SearchModule implements ReaderModule {
     return decoder.decode(bytes);
   }
 
-  async searchChapter(term: string, chapterLink?: string): Promise<any> {
+  async searchChapter(
+    term: string,
+    chapterLink?: string,
+    useGetContentApi?: boolean
+  ): Promise<any> {
     let localSearchResultBook: any = [];
     if (chapterLink) {
       const tocItem = { Href: chapterLink };
       const href = this.publication.getAbsoluteHref(tocItem.Href);
-
-      await fetch(href, this.delegate.requestConfig)
-        .then((r) => r.text())
-        .then(async (data) => {
+      if (useGetContentApi && this.delegate.api?.getContent) {
+          const data = await this.delegate.api?.getContent(chapterLink);
           this.searchContent(data, term, localSearchResultBook, tocItem);
-        });
+      } else {
+        await fetch(href, this.delegate.requestConfig)
+          .then((r) => r.text())
+          .then(async (data) => {
+            this.searchContent(data, term, localSearchResultBook, tocItem);
+          });
+      }
     } else {
       const linkHref = this.publication.getAbsoluteHref(
         this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
