@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2021 DITA (AM Consulting LLC)
  *
@@ -587,12 +588,14 @@ export default class D2Reader {
     term: string,
     current: boolean,
     chapterLink?: string,
+    useGetContentApi?: boolean,
     allChapterLinks?: string[]
   ) => {
     return await this.searchModule?.search(
       term,
       current,
       chapterLink,
+      useGetContentApi,
       allChapterLinks
     );
   };
