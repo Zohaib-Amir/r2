@@ -125,7 +125,7 @@ export class TimelineModule implements ReaderModule {
         chapter.className = "chapter";
 
         var tooltip = document.createElement("span");
-        tooltip.innerHTML = tocHrefAbs;
+        tooltip.innerHTML = link.Title;
         tooltip.className = "chapter-tooltip";
         chapter.appendChild(tooltip);
 
@@ -135,9 +135,9 @@ export class TimelineModule implements ReaderModule {
           var position;
 
           position = {
-            href: tocHrefAbs,
+            href: tocHrefAbs.split("#")[0],
             locations: {
-              progression: 0,
+              fragment: tocHrefAbs.split("#")[1],
             },
           } as Locator;
           log.log(position);
