@@ -125,7 +125,7 @@ export class TimelineModule implements ReaderModule {
         chapter.className = "chapter";
 
         var tooltip = document.createElement("span");
-        tooltip.innerHTML = this.delegate.currentChapterLink.href;
+        tooltip.innerHTML = link.Title;
         tooltip.className = "chapter-tooltip";
         chapter.appendChild(tooltip);
 
