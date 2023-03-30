@@ -132,7 +132,7 @@ export class TimelineModule implements ReaderModule {
         addEventListenerOptional(chapter, "click", (event: MouseEvent) => {
           event.preventDefault();
           event.stopPropagation();
-          var position;
+          var position; 
 
           position = {
             href: tocHrefAbs.split("#")[0],
