@@ -95,7 +95,7 @@ export class TimelineModule implements ReaderModule {
       if (this.timelineContainer) {
         this.timelineContainer.innerHTML = "";
       }
-      this.publication.readingOrder?.forEach((link) => {
+      this.publication.tableOfContents?.forEach((link) => {
         const linkHref = this.publication.getAbsoluteHref(link.Href);
         const tocItemAbs = this.publication.getTOCItemAbsolute(linkHref);
         const tocHref =
@@ -115,7 +115,7 @@ export class TimelineModule implements ReaderModule {
             chapterHeight = 1;
           }
         } else {
-          chapterHeight = 100 / (this.publication.readingOrder?.length ?? 0);
+          chapterHeight = 100 / (this.publication.tableOfContents?.length ?? 0);
         }
 
         var chapter = document.createElement("div");
