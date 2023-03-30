@@ -125,7 +125,7 @@ export class TimelineModule implements ReaderModule {
         chapter.className = "chapter";
 
         var tooltip = document.createElement("span");
-        tooltip.innerHTML = link.Title;
+        tooltip.innerHTML = this.delegate.currentChapterLink.href;
         tooltip.className = "chapter-tooltip";
         chapter.appendChild(tooltip);
 
@@ -145,7 +145,7 @@ export class TimelineModule implements ReaderModule {
           this.delegate.navigate(position);
         });
 
-        if (tocHref === this.delegate.currentChapterLink.href) {
+        if (tocHrefAbs.split("#")[0] === this.delegate.currentChapterLink.href) {
           chapter.className += " active";
         } else {
           chapter.className = chapter.className.replace(" active", "");
