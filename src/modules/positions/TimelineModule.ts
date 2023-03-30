@@ -126,7 +126,7 @@ export class TimelineModule implements ReaderModule {
 
         var tooltip = document.createElement("span");
         tooltip.innerHTML = link.Title;
-        tooltip.className = "chapter-tooltip" + "tocHref: " + tocHref + "AbsHref: " + tocHrefAbs;
+        tooltip.className = "chapter-tooltip";
         chapter.appendChild(tooltip);
 
         addEventListenerOptional(chapter, "click", (event: MouseEvent) => {
