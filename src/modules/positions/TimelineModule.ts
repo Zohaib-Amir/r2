@@ -25,6 +25,7 @@ import * as HTMLUtilities from "../../utils/HTMLUtilities";
 import { addEventListenerOptional } from "../../utils/EventHandler";
 import { Link } from "../../model/Link";
 import log from "loglevel";
+import { Locator } from "../../model/Locator";
 
 export interface TimelineModuleConfig {
   publication: Publication;
@@ -123,12 +124,10 @@ export class TimelineModule implements ReaderModule {
         chapter.style.width = "100%";
         chapter.className = "chapter";
 
-        if (link.Title !== undefined) {
           var tooltip = document.createElement("span");
-          tooltip.innerHTML = link.Title;
+          tooltip.innerHTML = link.Title + "⚫";
           tooltip.className = "chapter-tooltip";
           chapter.appendChild(tooltip);
-        }
 
         addEventListenerOptional(chapter, "click", (event: MouseEvent) => {
           event.preventDefault();
@@ -140,10 +139,9 @@ export class TimelineModule implements ReaderModule {
             locations: {
               progression: 0,
             },
-            type: link.TypeLink ?? link.TypeLink,
-            title: link.Title,
-          };
+          } as Locator;
           log.log(position);
+          
           this.delegate.navigate(position);
         });
 
