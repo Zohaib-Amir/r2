@@ -145,7 +145,7 @@ export class TimelineModule implements ReaderModule {
           this.delegate.navigate(position);
         });
 
-        if (tocHrefAbs === this.delegate.currentChapterLink.href) {
+        if (tocHref === this.delegate.currentChapterLink.href) {
           chapter.className += " active";
         } else {
           chapter.className = chapter.className.replace(" active", "");
