@@ -124,10 +124,10 @@ export class TimelineModule implements ReaderModule {
         chapter.style.width = "100%";
         chapter.className = "chapter";
 
-          var tooltip = document.createElement("span");
-          tooltip.innerHTML = link.Title + "⚫";
-          tooltip.className = "chapter-tooltip";
-          chapter.appendChild(tooltip);
+        var tooltip = document.createElement("span");
+        tooltip.innerHTML = link.Title;
+        tooltip.className = "chapter-tooltip" + "tocHref: " + tocHref + "AbsHref: " + tocHrefAbs;
+        chapter.appendChild(tooltip);
 
         addEventListenerOptional(chapter, "click", (event: MouseEvent) => {
           event.preventDefault();
@@ -135,13 +135,13 @@ export class TimelineModule implements ReaderModule {
           var position;
 
           position = {
-            href: tocHref,
+            href: tocHrefAbs,
             locations: {
               progression: 0,
             },
           } as Locator;
           log.log(position);
-          
+
           this.delegate.navigate(position);
         });
 
