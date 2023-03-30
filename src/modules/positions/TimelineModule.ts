@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2020 DITA (AM Consulting LLC)
  *
@@ -22,7 +23,6 @@ import { IFrameNavigator } from "../../navigator/IFrameNavigator";
 import { ReaderModule } from "../ReaderModule";
 import * as HTMLUtilities from "../../utils/HTMLUtilities";
 import { addEventListenerOptional } from "../../utils/EventHandler";
-import { Locator } from "../../model/Locator";
 import { Link } from "../../model/Link";
 import log from "loglevel";
 
@@ -96,12 +96,12 @@ export class TimelineModule implements ReaderModule {
         this.timelineContainer.innerHTML = "";
       }
       this.publication.tableOfContents?.forEach((link) => {
-        const linkHref = this.publication.getAbsoluteHref(link.Href);
-        const tocItemAbs = this.publication.getTOCItemAbsolute(linkHref);
-        const tocHref =
-          tocItemAbs?.Href.indexOf("#") !== -1
-            ? tocItemAbs?.Href.slice(0, tocItemAbs?.Href.indexOf("#"))
-            : tocItemAbs.Href;
+        // link = {
+        //   href: "OEBPS/2777495174666939975_84-h-0.htm.html#pg-header",
+        //   title: "Frankenstein;",
+        // };
+        const linkHref = link.Href;
+        const tocHref = linkHref;
         const tocHrefAbs = this.publication.getAbsoluteHref(tocHref ?? "");
 
         var chapterHeight;
@@ -123,9 +123,9 @@ export class TimelineModule implements ReaderModule {
         chapter.style.width = "100%";
         chapter.className = "chapter";
 
-        if (tocItemAbs?.Title !== undefined) {
+        if (link.Title !== undefined) {
           var tooltip = document.createElement("span");
-          tooltip.innerHTML = tocItemAbs.Title;
+          tooltip.innerHTML = link.Title;
           tooltip.className = "chapter-tooltip";
           chapter.appendChild(tooltip);
         }
@@ -134,27 +134,15 @@ export class TimelineModule implements ReaderModule {
           event.preventDefault();
           event.stopPropagation();
           var position;
-          if (
-            this.publication.positions ||
-            (this.delegate.rights.autoGeneratePositions &&
-              this.publication.positions)
-          ) {
-            position = {
-              ...this.publication.positions.filter(
-                (el: Locator) => el.href === link.Href
-              )[0],
-            };
-            position.href = this.publication.getAbsoluteHref(position.href);
-          } else {
-            position = {
-              href: tocHrefAbs,
-              locations: {
-                progression: 0,
-              },
-              type: link.TypeLink,
-              title: link.Title,
-            };
-          }
+
+          position = {
+            href: tocHref,
+            locations: {
+              progression: 0,
+            },
+            type: link.TypeLink ?? link.TypeLink,
+            title: link.Title,
+          };
           log.log(position);
           this.delegate.navigate(position);
         });
