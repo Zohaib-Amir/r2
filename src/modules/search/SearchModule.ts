@@ -857,6 +857,7 @@ export class SearchModule implements ReaderModule {
         }
         if (tocItem) {
           let href = this.publication.getAbsoluteHref(tocItem.Href);
+          
           if (useGetContentApi && this.delegate.api?.getContent) {
             const data = await this.delegate.api?.getContent(href);
             this.searchContent(data, term, localSearchResultBook, tocItem);
