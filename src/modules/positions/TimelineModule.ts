@@ -152,7 +152,7 @@ export class TimelineModule implements ReaderModule {
         }
 
         // append bookmarks indicator
-        // append notes indicator
+        // append notes indicator.
         // append highlights indicator
 
         if (this.timelineContainer) {
