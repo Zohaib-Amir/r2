@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2020 DITA (AM Consulting LLC)
  *
@@ -132,7 +131,7 @@ export class TimelineModule implements ReaderModule {
         addEventListenerOptional(chapter, "click", (event: MouseEvent) => {
           event.preventDefault();
           event.stopPropagation();
-          var position; 
+          var position;
 
           position = {
             href: tocHrefAbs.split("#")[0],
@@ -145,11 +144,27 @@ export class TimelineModule implements ReaderModule {
           this.delegate.navigate(position);
         });
 
-        if (tocHrefAbs.split("#")[0] === this.delegate.currentChapterLink.href) {
+        const tocHrefBase = tocHrefAbs.split("#")[0];
+        const tocHrefFragment = tocHrefAbs.split("#")[1];
+
+        if (
+          tocHrefBase === this.delegate.currentChapterLink.href &&
+          (!tocHrefFragment ||
+            tocHrefFragment ===
+              this.delegate.currentLocator().locations.fragment)
+        ) {
           chapter.className += " active";
         } else {
           chapter.className = chapter.className.replace(" active", "");
         }
+
+        // if (
+        //   tocHrefAbs.split("#")[0] === this.delegate.currentChapterLink.href
+        // ) {
+        //   chapter.className += " active";
+        // } else {
+        //   chapter.className = chapter.className.replace(" active", "");
+        // }
 
         // append bookmarks indicator.
         // append notes indicator.
