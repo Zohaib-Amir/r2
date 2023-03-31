@@ -100,9 +100,7 @@ export class TimelineModule implements ReaderModule {
         //   href: "OEBPS/2777495174666939975_84-h-0.htm.html#pg-header",
         //   title: "Frankenstein;",
         // };
-        const linkHref = link.Href;
-        const tocHref = linkHref;
-        const tocHrefAbs = this.publication.getAbsoluteHref(tocHref ?? "");
+        const tocHrefAbs = this.publication.getAbsoluteHref(link.Href ?? "");
 
         var chapterHeight;
         if (
@@ -122,6 +120,7 @@ export class TimelineModule implements ReaderModule {
         chapter.style.height = chapterHeight + "%";
         chapter.style.width = "100%";
         chapter.className = "chapter";
+        chapter.id = link.Href;
 
         var tooltip = document.createElement("span");
         tooltip.innerHTML = link.Title;
