@@ -36,6 +36,7 @@ import { ISelectionInfo } from "../highlight/common/selection";
 import { SHA256 } from "jscrypto";
 import { reset, searchDocDomSeek } from "./searchWithDomSeek";
 import log from "loglevel";
+import { addIdsToWords } from "add-ids-to-document";
 
 export interface SearchModuleAPI {}
 
@@ -482,7 +483,6 @@ export class SearchModule implements ReaderModule {
     term: string,
     current: boolean,
     chapterLink?: string,
-    useGetContextApi?: boolean,
     allChapterLinks?: string[],
   ): Promise<any> {
     this.currentChapterSearchResult = [];
@@ -496,15 +496,9 @@ export class SearchModule implements ReaderModule {
       await this.searchAndPaintChapter(term, 0, async () => {});
     }
 
-    if (current) {
-      if(useGetContextApi)
-      return await this.searchChapter(term, chapterLink, useGetContextApi);
-      else
+    if (current) { 
       return await this.searchChapter(term, chapterLink);
     } else {
-      if(useGetContextApi)
-      return await this.searchBook(term, allChapterLinks,useGetContextApi);
-      else
       return await this.searchBook(term, allChapterLinks);
     }
   }
@@ -816,7 +810,7 @@ export class SearchModule implements ReaderModule {
   };
 
   // Search Entire Book
-  async searchBook(term: string, allChapterLinks?: string[], useGetContentApi?: boolean): Promise<any> {
+  async searchBook(term: string, allChapterLinks?: string[]): Promise<any> {
     this.bookSearchResult = [];
 
     let localSearchResultBook: any = [];
@@ -826,16 +820,20 @@ export class SearchModule implements ReaderModule {
         const tocItem = {
           Href: href,
         };
-        if (useGetContentApi && this.delegate.api?.getContent) {
-          const data = await this.delegate.api?.getContent(href);
-          this.searchContent(data, term, localSearchResultBook, tocItem);
-      } else {
         await fetch(href, this.delegate.requestConfig)
           .then((r) => r.text())
           .then((data) => {
-            this.searchContent(data, term, localSearchResultBook, tocItem);
+            //data -> parse into doc
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'application/xml');
+            //updatedDoc = addIdsToWords(doc)
+            const formattedDoc = addIdsToWords(doc);
+            //updatedString = string(updatedDoc)
+            const serializer = new XMLSerializer();
+            const xmlString = serializer.serializeToString(formattedDoc);
+            this.searchContent(xmlString, term, localSearchResultBook, tocItem);
           });
-        }
+        
         if (index === this.publication.readingOrder.length - 1) {
           return localSearchResultBook;
         }
@@ -857,17 +855,20 @@ export class SearchModule implements ReaderModule {
         }
         if (tocItem) {
           let href = this.publication.getAbsoluteHref(tocItem.Href);
-          
-          if (useGetContentApi && this.delegate.api?.getContent) {
-            const data = await this.delegate.api?.getContent(href);
-            this.searchContent(data, term, localSearchResultBook, tocItem);
-        } else {
-          await fetch(href, this.delegate.requestConfig)
+            await fetch(href, this.delegate.requestConfig)
             .then((r) => r.text())
             .then((data) => {
-              this.searchContent(data, term, localSearchResultBook, tocItem);
+              //data -> parse into doc
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'application/xml');
+            //updatedDoc = addIdsToWords(doc)
+            const formattedDoc = addIdsToWords(doc);
+            //updatedString = string(updatedDoc)
+            const serializer = new XMLSerializer();
+            const xmlString = serializer.serializeToString(formattedDoc);
+              this.searchContent(xmlString, term, localSearchResultBook, tocItem);
             });
-        }
+        
       }
         if (index === this.publication.readingOrder.length - 1) {
           return localSearchResultBook;
@@ -892,22 +893,25 @@ export class SearchModule implements ReaderModule {
   async searchChapter(
     term: string,
     chapterLink?: string,
-    useGetContentApi?: boolean
   ): Promise<any> {
     let localSearchResultBook: any = [];
     if (chapterLink) {
       const tocItem = { Href: chapterLink };
       const href = this.publication.getAbsoluteHref(tocItem.Href);
-      if (useGetContentApi && this.delegate.api?.getContent) {
-          const data = await this.delegate.api?.getContent(chapterLink);
-          this.searchContent(data, term, localSearchResultBook, tocItem);
-      } else {
         await fetch(href, this.delegate.requestConfig)
           .then((r) => r.text())
           .then(async (data) => {
-            this.searchContent(data, term, localSearchResultBook, tocItem);
+            //data -> parse into doc
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'application/xml');
+            //updatedDoc = addIdsToWords(doc)
+            const formattedDoc = addIdsToWords(doc);
+            //updatedString = string(updatedDoc)
+            const serializer = new XMLSerializer();
+            const xmlString = serializer.serializeToString(formattedDoc);
+            this.searchContent(xmlString, term, localSearchResultBook, tocItem);
           });
-      }
+      // }
     } else {
       const linkHref = this.publication.getAbsoluteHref(
         this.publication.readingOrder[this.delegate.currentResource() ?? 0].Href
