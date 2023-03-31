@@ -151,7 +151,7 @@ export class TimelineModule implements ReaderModule {
           chapter.className = chapter.className.replace(" active", "");
         }
 
-        // append bookmarks indicator
+        // append bookmarks indicator.
         // append notes indicator.
         // append highlights indicator
 
