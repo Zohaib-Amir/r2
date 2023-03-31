@@ -120,7 +120,7 @@ export class TimelineModule implements ReaderModule {
         chapter.style.height = chapterHeight + "%";
         chapter.style.width = "100%";
         chapter.className = "chapter";
-        chapter.id = link.Href;
+        chapter.id = link.Href.split("#")[1]; //pgepub001
 
         var tooltip = document.createElement("span");
         tooltip.innerHTML = link.Title;
