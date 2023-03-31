@@ -144,28 +144,6 @@ export class TimelineModule implements ReaderModule {
           this.delegate.navigate(position);
         });
 
-        const tocHrefBase = tocHrefAbs.split("#")[0];
-        const tocHrefFragment = tocHrefAbs.split("#")[1];
-
-        if (
-          tocHrefBase === this.delegate.currentChapterLink.href &&
-          (!tocHrefFragment ||
-            tocHrefFragment ===
-              this.delegate.currentLocator().locations.fragment)
-        ) {
-          chapter.className += " active";
-        } else {
-          chapter.className = chapter.className.replace(" active", "");
-        }
-
-        // if (
-        //   tocHrefAbs.split("#")[0] === this.delegate.currentChapterLink.href
-        // ) {
-        //   chapter.className += " active";
-        // } else {
-        //   chapter.className = chapter.className.replace(" active", "");
-        // }
-
         // append bookmarks indicator.
         // append notes indicator.
         // append highlights indicator
