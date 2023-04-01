@@ -648,6 +648,7 @@ export default class D2Reader {
     return this.navigator.shouldShowContent;
   }
 
+  
   getShouldShowContent() {
     if(!this.navigator) return false;
     return this.navigator.shouldShowContent;
