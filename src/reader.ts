@@ -644,10 +644,12 @@ export default class D2Reader {
     return this.navigator.publication.Metadata.Language;
   }
   get shouldShowContent() {
+    if(!this.navigator) return false;
     return this.navigator.shouldShowContent;
   }
 
   getShouldShowContent() {
+    if(!this.navigator) return false;
     return this.navigator.shouldShowContent;
   }
   /**
