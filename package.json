@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@types/sass": "^1.43.1",
-    "add-ids-to-document": "^1.0.10",
+    "add-ids-to-document": "^1.0.11",
     "browserslist-useragent": "^3.0.3",
     "cssesc": "^3.0.0",
     "detect-browser": "^5.2.0",
