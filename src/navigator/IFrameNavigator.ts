@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2018-2020 DITA (AM Consulting LLC)
  *
@@ -2365,21 +2366,21 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       !this.publication.positions
     ) {
       this.stopReadAloud();
-      if (this.view?.layout === "fixed") {
+      // if (this.view?.layout === "fixed") {
+      //   this.handleNextChapterClick(event);
+      // } else {
+      if (this.view?.atEnd()) {
         this.handleNextChapterClick(event);
       } else {
-        if (this.view?.atEnd()) {
-          this.handleNextChapterClick(event);
-        } else {
-          this.view?.goToNextPage?.();
-          this.updatePositionInfo();
-          this.savePosition();
-        }
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
+        this.view?.goToNextPage?.();
+        this.updatePositionInfo();
+        this.savePosition();
       }
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      // }
     }
     if (!valid && this.sample?.isSampleRead && this.publication.positions) {
       if (event) {
