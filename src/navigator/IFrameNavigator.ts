@@ -2369,13 +2369,13 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       // if (this.view?.layout === "fixed") {
       //   this.handleNextChapterClick(event);
       // } else {
-      if (this.view?.atEnd()) {
-        this.handleNextChapterClick(event);
-      } else {
+      // if (this.view?.atEnd()) {
+      //   this.handleNextChapterClick(event);
+      // } else {
         this.view?.goToNextPage?.();
         this.updatePositionInfo();
         this.savePosition();
-      }
+      // }
       if (event) {
         event.preventDefault();
         event.stopPropagation();
