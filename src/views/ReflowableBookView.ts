@@ -327,7 +327,7 @@ export default class ReflowableBookView implements BookView {
       const rightWidth = this.getRightColumnsWidth();
       const totalWidth = leftWidth + width + rightWidth;
       //left + current width => totalWidth -> true else false
-      return leftWidth + width >= totalWidth;
+      return leftWidth >= totalWidth;
     }
   }
 
