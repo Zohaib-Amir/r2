@@ -83,6 +83,17 @@ export default class FixedBookView implements BookView {
   getRightColumnsWidthValue(): number {
     return 21321321;
   }
+  getLeftColumnsWidthValue(): number {
+    return 21321321;
+  }
+
+  getTotalWidthWidthValue(): number {
+    return 1232132132;
+  }
+
+  getWidthValue(): number {
+    return 312;
+  }
 
   atStart(): boolean {
     return true;

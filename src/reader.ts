@@ -833,6 +833,16 @@ export default class D2Reader {
   get getRightColumnsWidthValue() {
     return this.navigator.getRightColumnsWidthValue();
   }
+  get getLeftColumnsWidthValue() {
+    return this.navigator.getLeftColumnsWidthValue();
+  }
+  get totalWidthValue() {
+    return this.navigator.getTotalWidthWidthValue()
+  }
+  get widthValue () {
+    return this.navigator.getWidthValue()
+  }
+  
   snapToSelector = async (selector) => {
     this.navigator.snapToSelector(selector);
   };

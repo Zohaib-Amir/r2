@@ -57,6 +57,9 @@ interface BookView {
   atStart(): boolean;
   atEnd(): boolean;
   getRightColumnsWidthValue(): number;
+  getLeftColumnsWidthValue(): number;
+  getTotalWidthWidthValue(): number;
+  getWidthValue(): number;
   goToPreviousPage?(): void;
   goToNextPage?(): void;
   getCurrentPage(): number;
