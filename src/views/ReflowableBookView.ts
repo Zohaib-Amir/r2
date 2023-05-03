@@ -322,7 +322,7 @@ export default class ReflowableBookView implements BookView {
       );
     } else {
       // TODO: need to double check this, why sometimes we get "rightWidth 0.091064453125"
-      const rightWidth = Math.floor(this.getRightColumnsWidth());
+      const rightWidth = this.getRightColumnsWidth();
       return rightWidth <= 0;
     }
   }
