@@ -2231,7 +2231,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextPageClick(undefined);
   }
   nextPageOnly(): any {
-    this.handleNextPageOnlyClick();
+    this.handleNextPageOnlyClick(undefined);
   }
   previousResource(): any {
     this.handlePreviousChapterClick(undefined);
@@ -2355,11 +2355,16 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
-  private handleNextPageOnlyClick() {
-    this.stopReadAloud();
-        this.view?.goToNextPage?.();
-        this.updatePositionInfo();
-        this.savePosition();
+  private handleNextPageOnlyClick(event:any) {
+    if (this.view.atEnd){
+      this.handleNextChapterClick(event);
+    }else {
+
+      this.stopReadAloud();
+          this.view?.goToNextPage?.();
+          this.updatePositionInfo();
+          this.savePosition();
+    }
   }
 
   private handleNextPageClick(
