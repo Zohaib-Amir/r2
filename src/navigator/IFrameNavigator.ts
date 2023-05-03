@@ -2209,6 +2209,10 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     return this.view?.atEnd() ?? false;
   }
 
+  getRightColumnsWidthValue(): number { 
+    return this.view?.getRightColumnsWidthValue()
+  }
+
   previousPage(): any {
     this.handlePreviousPageClick(undefined);
   }

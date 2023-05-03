@@ -80,6 +80,9 @@ export default class FixedBookView implements BookView {
   atEnd(): boolean {
     return true;
   }
+  getRightColumnsWidthValue(): number {
+    return 21321321;
+  }
 
   atStart(): boolean {
     return true;

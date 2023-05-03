@@ -327,6 +327,10 @@ export default class ReflowableBookView implements BookView {
     }
   }
 
+  getRightColumnsWidthValue(): number {
+    return this.getRightColumnsWidth();
+  }
+
   goToPreviousPage(): void {
     const wrapper = HTMLUtilities.findRequiredElement(
       document,
