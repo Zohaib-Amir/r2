@@ -2356,7 +2356,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   }
 
   private handleNextPageOnlyClick(event:any) {
-    if (this.view.atEnd){
+    if (this.view.atEnd()){
       this.handleNextChapterClick(event);
     }else {
 
