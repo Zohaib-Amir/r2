@@ -322,19 +322,19 @@ export default class ReflowableBookView implements BookView {
       );
     } else {
       //we are in page view
-      // const width = this.getColumnWidth();
-      // const leftWidth = this.getLeftColumnsWidth();
-      // const rightWidth = this.getRightColumnsWidth();
-      // const totalWidth = leftWidth + width + rightWidth;
-      // if (leftWidth + 2 * width >= totalWidth) {
-      //   if (!isLastPage && rightWidth <= 0) {
-      //     isLastPage = true;
-      //     return false;
-      //   } else {
-      //     isLastPage = false;
-      //     return true;
-      //   }
-      // }
+      const width = this.getColumnWidth();
+      const leftWidth = this.getLeftColumnsWidth();
+      const rightWidth = this.getRightColumnsWidth();
+      const totalWidth = leftWidth + width + rightWidth;
+      if (leftWidth + width >= totalWidth) {
+        if (!isLastPage && rightWidth <= 0) {
+          isLastPage = true;
+          return false;
+        } else {
+          isLastPage = false;
+          return true;
+        }
+      }
       return false;
     }
   }
