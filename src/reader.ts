@@ -828,7 +828,8 @@ export default class D2Reader {
     return this.navigator.atStart();
   }
   get atEnd() {
-    return this.navigator.atEnd();
+    let isLastPage = false
+    return this.navigator.atEnd(isLastPage);
   }
   get getRightColumnsWidthValue() {
     return this.navigator.getRightColumnsWidthValue();
@@ -842,7 +843,7 @@ export default class D2Reader {
   get widthValue () {
     return this.navigator.getWidthValue()
   }
-  
+
   snapToSelector = async (selector) => {
     this.navigator.snapToSelector(selector);
   };

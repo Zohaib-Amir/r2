@@ -2205,8 +2205,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   atStart(): boolean {
     return this.view?.atStart() ?? false;
   }
-  atEnd(): boolean {
-    return this.view?.atEnd() ?? false;
+  atEnd(isLastPage?: boolean): boolean {
+    return this.view?.atEnd(isLastPage) ?? false;
   }
 
   getRightColumnsWidthValue(): number { 
@@ -2359,7 +2359,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     if (this.view.atEnd()){
       this.handleNextChapterClick(event);
     }else {
-
       this.stopReadAloud();
           this.view?.goToNextPage?.();
           this.updatePositionInfo();

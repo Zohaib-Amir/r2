@@ -55,7 +55,7 @@ interface BookView {
   snap(element: HTMLElement | null, relative?: boolean): void;
 
   atStart(): boolean;
-  atEnd(): boolean;
+  atEnd(isLastPage?: boolean): boolean;
   getRightColumnsWidthValue(): number;
   getLeftColumnsWidthValue(): number;
   getTotalWidthWidthValue(): number;

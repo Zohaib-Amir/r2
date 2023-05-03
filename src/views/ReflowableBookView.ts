@@ -310,7 +310,7 @@ export default class ReflowableBookView implements BookView {
   }
 
   // at bottom in scroll mode
-  atEnd(): boolean {
+  atEnd(isLastPage?: boolean): boolean {
     if (this.scrollMode) {
       const wrapper = HTMLUtilities.findRequiredElement(
         document,
@@ -327,7 +327,15 @@ export default class ReflowableBookView implements BookView {
       const rightWidth = this.getRightColumnsWidth();
       const totalWidth = leftWidth + width + rightWidth;
       //left + current width >= totalWidth -> true else false
-      return leftWidth + 2 * width >= totalWidth;
+      if (leftWidth + 2 * width >= totalWidth) {
+        if (!isLastPage && rightWidth <= 0) {
+          isLastPage = true;
+          return false;
+        } else {
+          return true;
+        }
+      }
+      return false;
     }
   }
 
