@@ -104,6 +104,8 @@ export default class D2Reader {
     if (arg1 && arg2) this.navigator.addListener(arg1, arg2);
   }
 
+  isLastPage = false
+
   /**
    * The async builder.
    */
@@ -828,8 +830,7 @@ export default class D2Reader {
     return this.navigator.atStart();
   }
   get atEnd() {
-    let isLastPage = false
-    return this.navigator.atEnd(isLastPage);
+    return this.navigator.atEnd(this.isLastPage);
   }
   get getRightColumnsWidthValue() {
     return this.navigator.getRightColumnsWidthValue();
