@@ -79,7 +79,7 @@ export default class FixedBookView implements BookView {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   atEnd(isLastPage?: boolean): boolean {
-    return true;
+    return false;
   }
   getRightColumnsWidthValue(): number {
     return 21321321;
