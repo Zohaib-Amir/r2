@@ -2216,7 +2216,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextPageClick(undefined);
   }
   nextPageOnly(): any {
-    this.handleNextPageOnlyClick();
+    this.handleNextPageOnlyClick(undefined);
   }
   previousResource(): any {
     this.handlePreviousChapterClick(undefined);
@@ -2340,9 +2340,25 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
-  private handleNextPageOnlyClick(
-  ) {
-    this.view?.goToNextPage?.();
+  private handleNextPageOnlyClick(event: any) {
+    // this.view?.goToNextPage?.();
+    if (
+      ( this.publication.positions) ||
+      !this.publication.positions
+    ) {
+      this.stopReadAloud();
+      if (this.view?.layout === "fixed") {
+        this.handleNextChapterClick(event);
+      } else {
+        if (this.view?.atEnd()) {
+          this.handleNextChapterClick(event);
+        } else {
+          this.view?.goToNextPage?.();
+          this.updatePositionInfo();
+          this.savePosition();
+        }
+      }
+    }
   }
 
   private handleNextPageClick(
@@ -2377,17 +2393,17 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       if (this.view?.layout === "fixed") {
         this.handleNextChapterClick(event);
       } else {
-      if (this.view?.atEnd()) {
-        this.handleNextChapterClick(event);
-      } else {
-        this.view?.goToNextPage?.();
-        this.updatePositionInfo();
-        this.savePosition();
-      }
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
+        if (this.view?.atEnd()) {
+          this.handleNextChapterClick(event);
+        } else {
+          this.view?.goToNextPage?.();
+          this.updatePositionInfo();
+          this.savePosition();
+        }
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
       }
     }
     if (!valid && this.sample?.isSampleRead && this.publication.positions) {
