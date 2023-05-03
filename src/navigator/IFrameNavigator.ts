@@ -2215,6 +2215,9 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   nextPage(): any {
     this.handleNextPageClick(undefined);
   }
+  nextPageOnly(): any {
+    this.handleNextPageOnlyClick();
+  }
   previousResource(): any {
     this.handlePreviousChapterClick(undefined);
   }
@@ -2337,6 +2340,11 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
+  private handleNextPageOnlyClick(
+  ) {
+    this.view?.goToNextPage?.();
+  }
+
   private handleNextPageClick(
     event: MouseEvent | TouchEvent | KeyboardEvent | undefined
   ) {
@@ -2366,21 +2374,21 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       !this.publication.positions
     ) {
       this.stopReadAloud();
-      // if (this.view?.layout === "fixed") {
-      //   this.handleNextChapterClick(event);
-      // } else {
-      // if (this.view?.atEnd()) {
-      //   this.handleNextChapterClick(event);
-      // } else {
+      if (this.view?.layout === "fixed") {
+        this.handleNextChapterClick(event);
+      } else {
+      if (this.view?.atEnd()) {
+        this.handleNextChapterClick(event);
+      } else {
         this.view?.goToNextPage?.();
         this.updatePositionInfo();
         this.savePosition();
-      // }
+      }
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
-      // }
+      }
     }
     if (!valid && this.sample?.isSampleRead && this.publication.positions) {
       if (event) {

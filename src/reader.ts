@@ -818,6 +818,9 @@ export default class D2Reader {
   nextPage = async () => {
     this.navigator.nextPage();
   };
+  nextPageOnly = async () => {
+    this.navigator.nextPageOnly();
+  };
   previousPage = async () => {
     this.navigator.previousPage();
   };
