@@ -2341,24 +2341,14 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   }
 
   private handleNextPageOnlyClick(event: any) {
-    // this.view?.goToNextPage?.();
-    if (
-      ( this.publication.positions) ||
-      !this.publication.positions
-    ) {
-      this.stopReadAloud();
-      if (this.view?.layout === "fixed") {
+    this.stopReadAloud();
+      if (this.view?.atEnd()) {
         this.handleNextChapterClick(event);
       } else {
-        if (this.view?.atEnd()) {
-          this.handleNextChapterClick(event);
-        } else {
-          this.view?.goToNextPage?.();
-          this.updatePositionInfo();
-          this.savePosition();
-        }
+        this.view?.goToNextPage?.();
+        this.updatePositionInfo();
+        this.savePosition();
       }
-    }
   }
 
   private handleNextPageClick(
