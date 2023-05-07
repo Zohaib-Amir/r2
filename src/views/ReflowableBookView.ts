@@ -324,11 +324,11 @@ export default class ReflowableBookView implements BookView {
       // we are in page view
 
       const rightWidth = Math.floor(this.getRightColumnsWidth());
-      const lastPageWidth = rightWidth % this.getColumnWidth();
+      const maxScroll = rightWidth - this.scrollingElement.clientWidth;
+      const currentScroll = this.scrollingElement.scrollLeft;
+      const scrollRatio = currentScroll / maxScroll;
 
-      return (
-        rightWidth <= 0 || lastPageWidth <= this.scrollingElement.clientWidth
-      );
+      return scrollRatio > 0.95;
     }
   }
 
