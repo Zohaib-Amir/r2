@@ -830,7 +830,7 @@ export default class D2Reader {
     return this.navigator.atStart();
   }
   get atEnd() {
-    return this.navigator.atEnd(this.isLastPage);
+    return this.navigator.atEnd();
   }
   get getRightColumnsWidthValue() {
     return this.navigator.getRightColumnsWidthValue();

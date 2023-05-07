@@ -2205,23 +2205,23 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   atStart(): boolean {
     return this.view?.atStart() ?? false;
   }
-  atEnd(isLastPage?: boolean): boolean {
-    return this.view?.atEnd(isLastPage) ?? false;
+  atEnd(): boolean {
+    return this.view?.atEnd() ?? false;
   }
 
-  getRightColumnsWidthValue(): number { 
-    return this.view?.getRightColumnsWidthValue()
+  getRightColumnsWidthValue(): number | undefined { 
+    return this.view?.getRightColumnsWidthValue && this.view?.getRightColumnsWidthValue()
   }
 
-  getLeftColumnsWidthValue(): number { 
-    return this.view?.getLeftColumnsWidthValue()
+  getLeftColumnsWidthValue(): number | undefined { 
+    return this.view?.getLeftColumnsWidthValue && this.view?.getLeftColumnsWidthValue()
   }
 
-  getTotalWidthWidthValue(): number {
-    return this.view?.getTotalWidthWidthValue()
+  getTotalWidthWidthValue(): number | undefined {
+    return this.view?.getTotalWidthWidthValue && this.view?.getTotalWidthWidthValue()
   }
-  getWidthValue(): number {
-    return this.view.getWidthValue()
+  getWidthValue(): number | undefined {
+    return this.view.getWidthValue && this.view.getWidthValue()
   }
 
   previousPage(): any {
@@ -2360,9 +2360,9 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       this.handleNextChapterClick(event);
     }else {
       this.stopReadAloud();
-          this.view?.goToNextPage?.();
-          this.updatePositionInfo();
-          this.savePosition();
+      this.view?.goToNextPage?.();
+      this.updatePositionInfo();
+      this.savePosition();
     }
   }
 

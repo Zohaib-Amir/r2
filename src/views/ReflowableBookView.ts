@@ -310,7 +310,7 @@ export default class ReflowableBookView implements BookView {
   }
 
   // at bottom in scroll mode
-  atEnd(isLastPage?: boolean): boolean {
+  atEnd(): boolean {
     if (this.scrollMode) {
       const wrapper = HTMLUtilities.findRequiredElement(
         document,
@@ -322,20 +322,9 @@ export default class ReflowableBookView implements BookView {
       );
     } else {
       //we are in page view
-      const width = this.getColumnWidth();
-      const leftWidth = this.getLeftColumnsWidth();
-      const rightWidth = this.getRightColumnsWidth();
-      const totalWidth = leftWidth + width + rightWidth;
-      if (leftWidth + width >= totalWidth) {
-        if (!isLastPage && rightWidth <= 0) {
-          isLastPage = true;
-          return false;
-        } else {
-          isLastPage = false;
-          return true;
-        }
-      }
-      return false;
+      // TODO: need to double check this, why sometimes we get "rightWidth 0.091064453125"
+      const rightWidth = Math.floor(this.getRightColumnsWidth());
+      return rightWidth <= 0;
     }
   }
 
