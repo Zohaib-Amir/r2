@@ -328,7 +328,7 @@ export default class ReflowableBookView implements BookView {
       const currentScroll = this.scrollingElement.scrollLeft;
       const scrollRatio = currentScroll / maxScroll;
 
-      return scrollRatio > 0.95;
+      return scrollRatio > 0.9999999999999;
     }
   }
 
