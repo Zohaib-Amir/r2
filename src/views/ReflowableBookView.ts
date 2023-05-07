@@ -309,7 +309,6 @@ export default class ReflowableBookView implements BookView {
     }
   }
 
-  // at bottom in scroll mode
   atEnd(): boolean {
     if (this.scrollMode) {
       const wrapper = HTMLUtilities.findRequiredElement(
@@ -326,9 +325,29 @@ export default class ReflowableBookView implements BookView {
       const lastPageWidth = rightWidth % this.getColumnWidth();
       const lastPageStart = rightWidth - lastPageWidth;
       const currentScroll = this.scrollingElement.scrollLeft;
-      const scrollThreshold = Math.max(1, this.getColumnWidth() / 2);
+      const scrollThreshold = 1;
 
-      return currentScroll >= lastPageStart - scrollThreshold;
+      // Get the scroll position of the last visible column
+      const lastColumnScrollPos =
+        Math.floor(
+          (currentScroll + this.getColumnWidth()) / this.getColumnWidth()
+        ) * this.getColumnWidth();
+
+      // If the last visible column is the last column, we are at the end
+      if (lastColumnScrollPos >= lastPageStart) {
+        return true;
+      }
+
+      // If there is only one column visible and we have scrolled to the end of it, we are at the end
+      if (
+        lastColumnScrollPos + this.getColumnWidth() + scrollThreshold >=
+        rightWidth
+      ) {
+        return true;
+      }
+
+      // Otherwise, we are not at the end
+      return false;
     }
   }
 
