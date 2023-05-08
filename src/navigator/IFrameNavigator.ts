@@ -2209,19 +2209,27 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     return this.view?.atEnd() ?? false;
   }
 
-  getRightColumnsWidthValue(): number | undefined { 
-    return this.view?.getRightColumnsWidthValue && this.view?.getRightColumnsWidthValue()
+  getRightColumnsWidthValue(): number | undefined {
+    return (
+      this.view?.getRightColumnsWidthValue &&
+      this.view?.getRightColumnsWidthValue()
+    );
   }
 
-  getLeftColumnsWidthValue(): number | undefined { 
-    return this.view?.getLeftColumnsWidthValue && this.view?.getLeftColumnsWidthValue()
+  getLeftColumnsWidthValue(): number | undefined {
+    return (
+      this.view?.getLeftColumnsWidthValue &&
+      this.view?.getLeftColumnsWidthValue()
+    );
   }
 
   getTotalWidthWidthValue(): number | undefined {
-    return this.view?.getTotalWidthWidthValue && this.view?.getTotalWidthWidthValue()
+    return (
+      this.view?.getTotalWidthWidthValue && this.view?.getTotalWidthWidthValue()
+    );
   }
   getWidthValue(): number | undefined {
-    return this.view.getWidthValue && this.view.getWidthValue()
+    return this.view.getWidthValue && this.view.getWidthValue();
   }
 
   previousPage(): any {
@@ -2240,29 +2248,24 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextChapterClick(undefined);
   }
   goToAnnotation(locator: Locator, annot: Annotation): any {
-    // let locations: Locations = locator.locations ?? { progression: 0 };
-    // if (locator.href.indexOf("#") !== -1) {
-    //   const elementId = locator.href.slice(locator.href.indexOf("#") + 1);
-    //   if (elementId !== undefined) {
-    //     locations = {
-    //       ...locations,
-    //       fragment: elementId,
-    //     };
-    //   }
-    // }
-    // const position = { ...locator };
-    // position.locations = locations;
-
-    // const linkHref = this.publication.getAbsoluteHref(locator.href);
-    // log.log(locator.hrxef);
-    // log.log(linkHref);
-    // position.href = linkHref;
-    // this.stopReadAloud();
     const exists = this.publication.getTOCItem(locator.href);
     if (exists) {
-      if(locator.locations.progression)
-      this.view.goToProgression(locator.locations.progression);
-     this.navigateToAnnotation(annot);
+      let locations: Locations = locator.locations ?? { progression: 0 };
+
+      locations = {
+        ...locations,
+      };
+
+      const position = { ...locator };
+      position.locations = locations;
+
+      const linkHref = this.publication.getAbsoluteHref(locator.href);
+      log.log(locator.href);
+      log.log(linkHref);
+      position.href = linkHref;
+      this.stopReadAloud();
+      this.navigate(position);
+      this.navigateToAnnotation(annot);
     }
   }
   goTo(locator: Locator): any {
@@ -2381,10 +2384,10 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
-  private handleNextPageOnlyClick(event:any) {
-    if (this.view.atEnd()){
+  private handleNextPageOnlyClick(event: any) {
+    if (this.view.atEnd()) {
       this.handleNextChapterClick(event);
-    }else {
+    } else {
       this.stopReadAloud();
       this.view?.goToNextPage?.();
       this.updatePositionInfo();
@@ -2796,13 +2799,12 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       }
     }
   }
-navigateToAnnotation(annot: Annotation): void {
-    let startContainer = annot.highlight
-              ?.selectionInfo.rangeInfo.startContainerElementCssSelector;
+  navigateToAnnotation(annot: Annotation): void {
+    let startContainer =
+      annot.highlight?.selectionInfo.rangeInfo.startContainerElementCssSelector;
     if (startContainer) {
-              this.view?.goToCssSelector(startContainer);
-            } 
-          
+      this.view?.goToCssSelector(startContainer);
+    }
   }
   async navigate(locator: Locator, history: boolean = true): Promise<void> {
     if (this.historyModule) {
