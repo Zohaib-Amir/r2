@@ -2260,8 +2260,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     // this.stopReadAloud();
     const exists = this.publication.getTOCItem(locator.href);
     if (exists) {
-      if(annot.locations.progression)
-      this.view.goToProgression(annot.locations.progression);
+      if(locator.locations.progression)
+      this.view.goToProgression(locator.locations.progression);
      this.navigateToAnnotation(annot);
     }
   }
