@@ -2259,13 +2259,13 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       // const position = { ...locator };
       // position.locations = locations;
 
-      const linkHref = this.publication.getAbsoluteHref(locator.href);
+      // const linkHref = this.publication.getAbsoluteHref(locator.href);
       // log.log(locator.href);
       // log.log(linkHref);
       // position.href = linkHref;
       // this.stopReadAloud();
       // this.navigate(position);
-    await this.navigate({href: linkHref, locations: annot.locations})
+    await this.navigate({href: locator.href, locations: annot.locations})
      await this.navigateToAnnotation(annot);
     // }
   }
