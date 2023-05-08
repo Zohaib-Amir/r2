@@ -2265,11 +2265,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       // position.href = linkHref;
       // this.stopReadAloud();
       // this.navigate(position);
-      let startContainer =
-      annot.highlight?.selectionInfo.rangeInfo.startContainerElementCssSelector;
-    if (startContainer) {
-      this.view?.goToCssSelector(startContainer);
-    }
+    this.navigate({href: annot.href, locations: annot.locations})
       this.navigateToAnnotation(annot);
     // }
   }
