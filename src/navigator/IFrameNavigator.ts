@@ -2254,11 +2254,16 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     // position.locations = locations;
 
     // const linkHref = this.publication.getAbsoluteHref(locator.href);
-    // log.log(locator.href);
+    // log.log(locator.hrxef);
     // log.log(linkHref);
     // position.href = linkHref;
     // this.stopReadAloud();
-    this.navigateToAnnotation(annot);
+    const exists = this.publication.getTOCItem(locator.href);
+    if (exists) {
+      if(annot.locations.progression)
+      this.view.goToProgression(annot.locations.progression);
+     this.navigateToAnnotation(annot);
+    }
   }
   goTo(locator: Locator): any {
     let locations: Locations = locator.locations ?? { progression: 0 };
@@ -2791,15 +2796,13 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       }
     }
   }
-  async navigateToAnnotation(annot: Annotation): Promise<void> {
+navigateToAnnotation(annot: Annotation): void {
     let startContainer = annot.highlight
               ?.selectionInfo.rangeInfo.startContainerElementCssSelector;
     if (startContainer) {
               this.view?.goToCssSelector(startContainer);
             } 
-            // else {
-            //   this.view?.goToProgression(locator.locations.progression ?? 0);
-            // }
+          
   }
   async navigate(locator: Locator, history: boolean = true): Promise<void> {
     if (this.historyModule) {
