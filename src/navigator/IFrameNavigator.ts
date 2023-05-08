@@ -2250,21 +2250,26 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   goToAnnotation(locator: Locator, annot: Annotation): any {
     // const exists = this.publication.getTOCItem(locator.href);
     // if (exists) {
-      // let locations: Locations = locator.locations ?? { progression: 0 };
+      let locations: Locations = locator.locations ?? { progression: 0 };
 
-      // locations = {
-      //   ...locations,
-      // };
+      locations = {
+        ...locations,
+      };
 
-      // const position = { ...locator };
-      // position.locations = locations;
+      const position = { ...locator };
+      position.locations = locations;
 
-      // const linkHref = this.publication.getAbsoluteHref(locator.href);
-      // log.log(locator.href);
-      // log.log(linkHref);
-      // position.href = linkHref;
-      // this.stopReadAloud();
-      // this.navigate(position);
+      const linkHref = this.publication.getAbsoluteHref(locator.href);
+      log.log(locator.href);
+      log.log(linkHref);
+      position.href = linkHref;
+      this.stopReadAloud();
+      this.navigate(position);
+    //   let startContainer =
+    //   annot.highlight?.selectionInfo.rangeInfo.startContainerElementCssSelector;
+    // if (startContainer) {
+    //   this.view?.goToCssSelector(startContainer);
+    // }
       this.navigateToAnnotation(annot);
     // }
   }
