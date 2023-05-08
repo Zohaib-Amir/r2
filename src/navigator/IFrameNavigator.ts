@@ -2240,24 +2240,24 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextChapterClick(undefined);
   }
   goToAnnotation(locator: Locator, annot: Annotation): any {
-    let locations: Locations = locator.locations ?? { progression: 0 };
-    if (locator.href.indexOf("#") !== -1) {
-      const elementId = locator.href.slice(locator.href.indexOf("#") + 1);
-      if (elementId !== undefined) {
-        locations = {
-          ...locations,
-          fragment: elementId,
-        };
-      }
-    }
-    const position = { ...locator };
-    position.locations = locations;
+    // let locations: Locations = locator.locations ?? { progression: 0 };
+    // if (locator.href.indexOf("#") !== -1) {
+    //   const elementId = locator.href.slice(locator.href.indexOf("#") + 1);
+    //   if (elementId !== undefined) {
+    //     locations = {
+    //       ...locations,
+    //       fragment: elementId,
+    //     };
+    //   }
+    // }
+    // const position = { ...locator };
+    // position.locations = locations;
 
-    const linkHref = this.publication.getAbsoluteHref(locator.href);
-    log.log(locator.href);
-    log.log(linkHref);
-    position.href = linkHref;
-    this.stopReadAloud();
+    // const linkHref = this.publication.getAbsoluteHref(locator.href);
+    // log.log(locator.href);
+    // log.log(linkHref);
+    // position.href = linkHref;
+    // this.stopReadAloud();
     this.navigateToAnnotation(annot);
   }
   goTo(locator: Locator): any {
