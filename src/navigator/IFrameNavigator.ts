@@ -2247,7 +2247,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   nextResource(): any {
     this.handleNextChapterClick(undefined);
   }
-  goToAnnotation(locator: Locator, annot: Annotation): any {
+  async goToAnnotation(locator: Locator, annot: Annotation): Promise<any> {
     // const exists = this.publication.getTOCItem(locator.href);
     // if (exists) {
       // let locations: Locations = locator.locations ?? { progression: 0 };
@@ -2265,8 +2265,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       // position.href = linkHref;
       // this.stopReadAloud();
       // this.navigate(position);
-    this.navigate({href: linkHref, locations: annot.locations})
-      this.navigateToAnnotation(annot);
+    await this.navigate({href: linkHref, locations: annot.locations})
+     await this.navigateToAnnotation(annot);
     // }
   }
   goTo(locator: Locator): any {
