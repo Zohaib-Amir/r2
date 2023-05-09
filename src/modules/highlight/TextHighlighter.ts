@@ -61,6 +61,7 @@ export enum HighlightContainer {
   R2_ID_DEFINITIONS_CONTAINER = "R2_ID_DEFINITIONS_CONTAINER",
   R2_ID_LINEFOCUS_CONTAINER = "R2_ID_LINEFOCUS_CONTAINER",
   R2_ID_GUTTER_RIGHT_CONTAINER = "R2_ID_GUTTER_RIGHT_CONTAINER",
+  R2_ID_END_OF_CHAPTER = "R2_ID_END_OF_CHAPTER",
 }
 
 export const CLASS_HIGHLIGHT_CONTAINER = "R2_CLASS_HIGHLIGHT_CONTAINER";
@@ -2649,6 +2650,10 @@ export class TextHighlighter {
       container.setAttribute("id", id);
       if (id !== HighlightContainer.R2_ID_GUTTER_RIGHT_CONTAINER) {
         container.style.setProperty("pointer-events", "none");
+      }
+      if (id === HighlightContainer.R2_ID_END_OF_CHAPTER) {
+        container.style.setProperty("height", "10px");
+        container.style.setProperty("width", "10px");
       }
       if (this.delegate.view?.layout === "fixed") {
         container.style.setProperty("position", "absolute");
