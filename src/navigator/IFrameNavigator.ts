@@ -794,6 +794,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       this.abortOnError(err);
       return Promise.reject(err);
     }
+
   }
 
   timeout: any;

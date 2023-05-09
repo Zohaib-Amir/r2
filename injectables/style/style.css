@@ -256,6 +256,8 @@ img {
 
 #R2_ID_GUTTER_RIGHT_CONTAINER {
     position: absolute;
+    height: 1px;
+    width: 1px;
     top: 0;
     right: -20px;
 }
