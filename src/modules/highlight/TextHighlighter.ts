@@ -2913,7 +2913,7 @@ export class TextHighlighter {
     endOfChapParent.style.setProperty("width", "10px");
     doc
       .getElementById(HighlightContainer.R2_ID_SEARCH_CONTAINER)
-      .append(highlightParent);
+      .append(endOfChapParent);
     const paginated = this.delegate.view?.isPaginated();
 
     // Resize Sensor sets body position to "relative" (default static),
