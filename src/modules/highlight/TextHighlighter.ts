@@ -2911,7 +2911,9 @@ export class TextHighlighter {
     endOfChapParent.style.setProperty("pointer-events", "none");
     endOfChapParent.style.setProperty("height", "10px");
     endOfChapParent.style.setProperty("width", "10px");
-    doc.body.append(endOfChapParent);
+    doc
+      .getElementById(HighlightContainer.R2_ID_SEARCH_CONTAINER)
+      .append(highlightParent);
     const paginated = this.delegate.view?.isPaginated();
 
     // Resize Sensor sets body position to "relative" (default static),
