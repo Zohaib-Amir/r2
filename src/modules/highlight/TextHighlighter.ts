@@ -2906,6 +2906,7 @@ export class TextHighlighter {
     if (highlight.pointerInteraction) {
       highlightParent.setAttribute("data-click", "1");
     }
+
     const endOfChapParent = doc.createElement("div") as IHTMLDivElementWithRect;
     endOfChapParent.setAttribute("id", R2_ID_END_OF_CHAPTER);
     endOfChapParent.style.setProperty("pointer-events", "none");
