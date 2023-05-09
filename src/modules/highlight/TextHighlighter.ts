@@ -2907,14 +2907,13 @@ export class TextHighlighter {
       highlightParent.setAttribute("data-click", "1");
     }
 
-    const endOfChapParent = doc.createElement("div") as IHTMLDivElementWithRect;
+    const endOfChapParent = doc.createElement("div");
     endOfChapParent.setAttribute("id", R2_ID_END_OF_CHAPTER);
     endOfChapParent.style.setProperty("pointer-events", "none");
     endOfChapParent.style.setProperty("height", "10px");
     endOfChapParent.style.setProperty("width", "10px");
-    // doc
-    //   .getElementById(HighlightContainer.R2_ID_SEARCH_CONTAINER)
-    //   .append(endOfChapParent);
+    endOfChapParent.innerText = R2_ID_END_OF_CHAPTER;
+    doc.body.append(endOfChapParent);
     const paginated = this.delegate.view?.isPaginated();
 
     // Resize Sensor sets body position to "relative" (default static),
@@ -3544,9 +3543,6 @@ export class TextHighlighter {
         doc
           .getElementById(HighlightContainer.R2_ID_HIGHLIGHTS_CONTAINER)
           .append(highlightParent);
-        doc
-          .getElementById(HighlightContainer.R2_ID_HIGHLIGHTS_CONTAINER)
-          .append(endOfChapParent);
         break;
     }
 
