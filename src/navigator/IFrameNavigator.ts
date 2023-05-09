@@ -2248,28 +2248,12 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   nextResource(): any {
     this.handleNextChapterClick(undefined);
   }
-  async goToAnnotation(locator: Locator, annot: Annotation): Promise<any> {
-    // const exists = this.publication.getTOCItem(locator.href);
-    // if (exists) {
-      // let locations: Locations = locator.locations ?? { progression: 0 };
 
-      // locations = {
-      //   ...locations,
-      // };
-
-      // const position = { ...locator };
-      // position.locations = locations;
-
-      // const linkHref = this.publication.getAbsoluteHref(locator.href);
-      // log.log(locator.href);
-      // log.log(linkHref);
-      // position.href = linkHref;
-      // this.stopReadAloud();
-      // this.navigate(position);
-    await this.navigate({href: locator.href, locations: annot.locations})
-     await this.navigateToAnnotation(annot);
-    // }
+  async goToCssSelector(_cssSelector: string, _offset?: string): Promise<any> {
+    // reader document -> query selector element -> if !offset -> navigate to element -> if offset -> create element at offset and navigate to element -> remove element
+    return this.view.iframe
   }
+
   goTo(locator: Locator): any {
     let locations: Locations = locator.locations ?? { progression: 0 };
     if (locator.href.indexOf("#") !== -1) {

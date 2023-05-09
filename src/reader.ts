@@ -799,8 +799,8 @@ export default class D2Reader {
   get positions() {
     return this.navigator.positions();
   }
-  goToAnnotation = async (locator: Locator, annot: Annotation) => {
-    this.navigator.goToAnnotation(locator, annot);
+  goToCssSelector = async (_cssSelector: string, _offset?: string) => {
+    this.navigator.goToCssSelector(_cssSelector, _offset);
   }
   goTo = async (locator: Locator) => {
     this.navigator.goTo(locator);
