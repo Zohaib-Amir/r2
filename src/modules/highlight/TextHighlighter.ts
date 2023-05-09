@@ -67,7 +67,6 @@ export const CLASS_HIGHLIGHT_CONTAINER = "R2_CLASS_HIGHLIGHT_CONTAINER";
 export const CLASS_HIGHLIGHT_BOUNDING_AREA = "R2_CLASS_HIGHLIGHT_BOUNDING_AREA";
 export const CLASS_HIGHLIGHT_AREA = "R2_CLASS_HIGHLIGHT_AREA";
 export const CLASS_HIGHLIGHT_ICON = "R2_CLASS_HIGHLIGHT_ICON";
-export const R2_ID_END_OF_CHAPTER = "R2_ID_END_OF_CHAPTER";
 
 const DEFAULT_BACKGROUND_COLOR_OPACITY = 0.5;
 const ALT_BACKGROUND_COLOR_OPACITY = 0.75;
@@ -125,7 +124,6 @@ export const _blacklistIdClassForCssSelectors = [
   HighlightContainer.R2_ID_DEFINITIONS_CONTAINER,
   HighlightContainer.R2_ID_LINEFOCUS_CONTAINER,
   HighlightContainer.R2_ID_GUTTER_RIGHT_CONTAINER,
-  R2_ID_END_OF_CHAPTER,
   CLASS_HIGHLIGHT_CONTAINER,
   CLASS_HIGHLIGHT_AREA,
   CLASS_HIGHLIGHT_BOUNDING_AREA,
@@ -2906,14 +2904,6 @@ export class TextHighlighter {
     if (highlight.pointerInteraction) {
       highlightParent.setAttribute("data-click", "1");
     }
-
-    const endOfChapParent = doc.createElement("div");
-    endOfChapParent.setAttribute("id", R2_ID_END_OF_CHAPTER);
-    endOfChapParent.style.setProperty("pointer-events", "none");
-    endOfChapParent.style.setProperty("height", "10px");
-    endOfChapParent.style.setProperty("width", "10px");
-    endOfChapParent.innerText = R2_ID_END_OF_CHAPTER;
-    doc.body.append(endOfChapParent);
     const paginated = this.delegate.view?.isPaginated();
 
     // Resize Sensor sets body position to "relative" (default static),
