@@ -394,7 +394,19 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.requestConfig = requestConfig;
     this.sampleReadEventHandler = new SampleReadEventHandler(this);
   }
-
+  isElementInReaderWindow(id: string, doc: Document): boolean {
+    const element = doc.getElementById(id);
+    if (!element) {
+      return false; // element not found in document
+    }
+    const rect = element.getBoundingClientRect();
+    const windowHeight = doc.documentElement.clientHeight;
+    const windowWidth = doc.documentElement.clientWidth;
+    const vertInView = rect.top <= windowHeight && rect.top + rect.height >= 0;
+    const horInView = rect.left <= windowWidth && rect.left + rect.width >= 0;
+    return vertInView && horInView;
+  }
+  
   stop() {
     log.log("Iframe navigator stop");
 
@@ -2371,7 +2383,14 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   }
 
   private handleNextPageOnlyClick(event: any) {
-    if (this.view.atEnd()) {
+    const iframe = document.getElementsByTagName('iframe')[0];
+    let isEOC = false;
+    if(iframe){
+      const doc = iframe.contentWindow?.document;
+      if(doc)
+        isEOC = this.isElementInReaderWindow('R2_ID_END_OF_CHAPTER', doc);
+    }
+    if (isEOC) {
       this.handleNextChapterClick(event);
     } else {
       this.stopReadAloud();
