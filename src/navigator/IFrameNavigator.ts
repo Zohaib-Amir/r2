@@ -2276,7 +2276,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan"></span>` + originalHtml.slice(_offset)
       // replace original html with modified verison
       element.innerHTML = newHtml
-      // Get the current locator and set its location to the new span element with id
+      // Get the current locator and set its location to the new span element
       const locator = this.currentLocator()
       locator.locations = { fragment: "navSpan" }
       // Go to the new locator
