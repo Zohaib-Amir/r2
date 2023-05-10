@@ -406,7 +406,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     const horInView = rect.left <= windowWidth && rect.left + rect.width >= 0;
     return vertInView && horInView;
   }
-  
+
   stop() {
     log.log("Iframe navigator stop");
 
@@ -932,7 +932,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
           this.view.height =
             BrowserUtilities.getHeight() - 40 - (this.attributes?.margin ?? 0);
           if (this.infoBottom) this.infoBottom.style.removeProperty("display");
-          document.body.onscroll = () => {};
+          document.body.onscroll = () => { };
           if (this.nextChapterBottomAnchorElement)
             this.nextChapterBottomAnchorElement.style.display = "none";
           if (this.previousChapterTopAnchorElement)
@@ -1286,7 +1286,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     } catch (err: unknown) {
       log.error(err);
       this.abortOnError(err);
-      return new Promise<void>((_, reject) => reject(err)).catch(() => {});
+      return new Promise<void>((_, reject) => reject(err)).catch(() => { });
     }
   }
 
@@ -1538,9 +1538,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
           const message =
             typeof e === "string"
               ? e
-              : `Injectable failed to load at: ${
-                  "href" in injectable ? injectable.href : injectable.src
-                }`;
+              : `Injectable failed to load at: ${"href" in injectable ? injectable.href : injectable.src
+              }`;
           reject(new Error(message));
         };
       });
@@ -1622,8 +1621,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
         e instanceof Error
           ? e
           : typeof e === "string"
-          ? new Error(e)
-          : new Error("An unknown error occurred in the IFrameNavigator.");
+            ? new Error(e)
+            : new Error("An unknown error occurred in the IFrameNavigator.");
       this.api.onError(trueError);
     } else {
       // otherwise just display the standard error UI
@@ -2261,9 +2260,30 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextChapterClick(undefined);
   }
 
-  async goToCssSelector(_cssSelector: string, _offset?: string): Promise<any> {
+  async goToCssSelector(_cssSelector: string, _offset?: number): Promise<any> {
     // reader document -> query selector element -> if !offset -> navigate to element -> if offset -> create element at offset and navigate to element -> remove element
-    return this.view.iframe
+    const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
+    const element = iframe.contentWindow?.document.querySelector(_cssSelector)
+    if (element && !_offset) {
+      const locator = this.currentLocator()
+      locator.locations = { fragment: element.id }
+      this.goTo(locator)
+    }
+    if (element && _offset) {
+      // Store the original HTML of the element
+      const originalHtml = element.innerHTML
+      // insert navigation span at offset
+      const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan"></span>` + originalHtml.slice(_offset)
+      // replace original html with modified verison
+      element.innerHTML = newHtml
+      // Get the current locator and set its location to the new span element
+      const locator = this.currentLocator()
+      locator.locations = { fragment: "navSpan" }
+      // Go to the new locator
+      this.goTo(locator)
+      // Restore the element's original HTML
+      element.innerHTML = originalHtml
+    }
   }
 
   goTo(locator: Locator): any {
@@ -2385,9 +2405,9 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private handleNextPageOnlyClick(event: any) {
     const iframe = document.getElementsByTagName('iframe')[0];
     let isEOC = false;
-    if(iframe){
+    if (iframe) {
       const doc = iframe.contentWindow?.document;
-      if(doc)
+      if (doc)
         isEOC = this.isElementInReaderWindow('R2_ID_END_OF_CHAPTER', doc);
     }
     if (isEOC) {
@@ -2453,7 +2473,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   }
 
-  private handleClickThrough(_event: MouseEvent | TouchEvent) {}
+  private handleClickThrough(_event: MouseEvent | TouchEvent) { }
 
   private handleInternalLink(event: MouseEvent | TouchEvent) {
     const element = event.target;
