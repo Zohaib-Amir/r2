@@ -2281,7 +2281,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       locator.locations = { fragment: "navSpan" }
       // Go to the new locator
       this.goTo(locator)
-      // Restore the element's original HTML
+      // Restore the element's original HTML 
       element.innerHTML = originalHtml
     }
   }
