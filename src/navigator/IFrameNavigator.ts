@@ -2260,7 +2260,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextChapterClick(undefined);
   }
 
-  async goToCssSelector(_cssSelector: string, _offset?: number): Promise<any> {
+  goToCssSelector(_cssSelector: string, _offset?: number): any {
     // reader document -> query selector element -> if !offset -> navigate to element -> if offset -> create element at offset and navigate to element -> remove element
     const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
     const element = iframe.contentWindow?.document.querySelector(_cssSelector)
@@ -2268,7 +2268,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       const locator = this.currentLocator()
       locator.locations = { fragment: element.id }
       this.goTo(locator)
-      return locator
     }
     if (element && _offset) {
       // Store the original HTML of the element
@@ -2284,7 +2283,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       this.goTo(locator)
       // Restore the element's original HTML
       element.innerHTML = originalHtml
-      return locator
     }
   }
 
