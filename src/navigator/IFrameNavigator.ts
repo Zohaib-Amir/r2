@@ -2759,6 +2759,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       event.stopPropagation();
     }
   }
+  
 
   private handleNextChapterClick(
     event: MouseEvent | TouchEvent | KeyboardEvent | undefined
