@@ -1613,7 +1613,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
 
     await Promise.all(injectablesToLoad);
-    this.AreInjectablesApplied = true;
+    setTimeout(()=>{this.AreInjectablesApplied = true},1000) 
 
   }
 
