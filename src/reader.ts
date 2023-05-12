@@ -800,7 +800,7 @@ export default class D2Reader {
     return this.navigator.positions();
   }
   goToCssSelector = async (_cssSelector: string, _offset?: number) => {
-    this.navigator.goToCssSelector(_cssSelector, _offset);
+    await this.navigator.goToCssSelector(_cssSelector, _offset);
   }
   goTo = async (locator: Locator) => {
     this.navigator.goTo(locator);
