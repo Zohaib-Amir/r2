@@ -252,8 +252,12 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private readonly annotator: Annotator | undefined;
 
   view: BookView;
+
+  // ANCHOR - properties
+  isBeingStyled: boolean;
   shouldShowContent: boolean;
   AreInjectablesApplied: boolean;
+  contentProcessed: boolean;
 
   private readonly eventHandler: EventHandler;
   private readonly touchEventHandler: TouchEventHandler;
@@ -292,7 +296,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   private newPosition: Locator | undefined;
   private newElementId: string | undefined;
   private isLoading: boolean;
-  private isBeingStyled: boolean;
   private readonly initialLastReadingPosition?: ReadingPosition;
   api?: Partial<NavigatorAPI>;
   rights: Partial<ReaderRights> = {
@@ -1591,7 +1594,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
               head.appendChild(link);
               addLoadingInjectable(link);
             }
-            //ANCHOR - SET INJECTABLE CSS APPLIED TRUE HERE
           } else if (injectable.type === "script" && injectable.url) {
             const script = IFrameNavigator.createJavascriptLink(
               injectable.url,
@@ -2086,6 +2088,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
         }
       }, 400);
     }
+    this.contentProcessed = true
   }
 
   private static goBack() {
@@ -2269,7 +2272,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
 
   reader document -> query selector element -> if !offset -> navigate to element. -> if offset -> create element at offset and navigate to element -> remove element
   */
-  async goToCssSelector(_cssSelector: string, _offset?: number): Promise<any> {
+  async navigateToCssSelector(_cssSelector: string, _offset?: number): Promise<any> {
     // reader document -> query selector element -> if !offset -> navigate to element -> if offset -> create element at offset and navigate to element -> remove element
     const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
     const element = iframe.contentWindow?.document.querySelector(_cssSelector)

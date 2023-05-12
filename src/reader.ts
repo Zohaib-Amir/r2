@@ -653,6 +653,14 @@ export default class D2Reader {
     if(!this.navigator) return false;
     return this.navigator.AreInjectablesApplied;
   }
+  get isBeingStyled() {
+    if(!this.navigator) return false;
+    return this.navigator.isBeingStyled;
+  }
+  get contentProcessed() {
+    if(!this.navigator) return false;
+    return this.navigator.contentProcessed;
+  }
 
   /**
    * Settings
@@ -798,8 +806,8 @@ export default class D2Reader {
   get positions() {
     return this.navigator.positions();
   }
-  goToCssSelector = async (_cssSelector: string, _offset?: number) => {
-    await this.navigator.goToCssSelector(_cssSelector, _offset);
+  navigateToCssSelector = async (_cssSelector: string, _offset?: number) => {
+    await this.navigator.navigateToCssSelector(_cssSelector, _offset);
   }
   goTo = async (locator: Locator) => {
     this.navigator.goTo(locator);
