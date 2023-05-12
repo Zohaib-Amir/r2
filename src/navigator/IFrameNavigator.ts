@@ -1518,7 +1518,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
           }
         }, 300);
       }, 200);
-
+      this.AreInjectablesApplied = true;
       return new Promise<void>((resolve) => resolve());
     } catch (err: unknown) {
       log.error(err);
@@ -1613,7 +1613,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
 
     await Promise.all(injectablesToLoad);
     // setTimeout(()=>{},1000) 
-    this.AreInjectablesApplied = true;
+    // this.AreInjectablesApplied = true;
 
   }
 
