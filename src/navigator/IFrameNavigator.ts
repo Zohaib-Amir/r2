@@ -2260,6 +2260,11 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     this.handleNextChapterClick(undefined);
   }
 
+  /**
+  only made for navigating within a chapter
+
+  reader document -> query selector element -> if !offset -> navigate to element. -> if offset -> create element at offset and navigate to element -> remove element
+  */
   goToCssSelector(_cssSelector: string, _offset?: number): any {
     // reader document -> query selector element -> if !offset -> navigate to element -> if offset -> create element at offset and navigate to element -> remove element
     const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
@@ -2273,7 +2278,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       // Store the original HTML of the element
       const originalHtml = element.innerHTML
       // insert navigation span at offset
-      const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan"></span>` + originalHtml.slice(_offset)
+      const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan">NAVIGATE TO ME</span>` + originalHtml.slice(_offset)
       // replace original html with modified verison
       element.innerHTML = newHtml
       // Get the current locator and set its location to the new span element
