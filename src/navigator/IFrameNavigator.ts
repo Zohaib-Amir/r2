@@ -1603,7 +1603,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
             addLoadingInjectable(script);
           }
         });
-        this.AreInjectablesApplied = true;
+        setTimeout(()=>{this.AreInjectablesApplied = true},1000) 
 
       }
     }
