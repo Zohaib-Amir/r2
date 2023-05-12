@@ -2270,10 +2270,11 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       this.goTo(locator)
     }
     if (element && _offset) {
+      const randomId = Math.random();
       // Store the original HTML of the element
       const originalHtml = element.innerHTML
       // insert navigation span at offset
-      const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan"></span>` + originalHtml.slice(_offset)
+      const newHtml = originalHtml.slice(0, _offset) + `<span id="${randomId}"></span>` + originalHtml.slice(_offset)
       // replace original html with modified verison
       element.innerHTML = newHtml
       // Get the current locator and set its location to the new span element
@@ -2282,7 +2283,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       // Go to the new locator
       this.goTo(locator)
       // Restore the element's original HTML 
-      element.innerHTML = originalHtml
+      // element.innerHTML = originalHtml
     }
   }
 
