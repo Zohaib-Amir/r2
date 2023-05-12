@@ -2453,6 +2453,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       !this.sample?.isSampleRead ||
       !this.publication.positions
     ) {
+
       this.stopReadAloud();
       if (this.view?.layout === "fixed") {
         this.handleNextChapterClick(event);
@@ -2735,7 +2736,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       const position: Locator = {
         href: this.publication.getAbsoluteHref(previous.Href),
         locations: {
-          progression: 0,
+          progression: 1,
         },
         type: previous.TypeLink,
         title: previous.Title,
@@ -2763,6 +2764,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       event.stopPropagation();
     }
   }
+  
 
   private handleNextChapterClick(
     event: MouseEvent | TouchEvent | KeyboardEvent | undefined
