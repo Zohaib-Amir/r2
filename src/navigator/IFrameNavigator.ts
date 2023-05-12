@@ -1528,6 +1528,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   }
 
   private async injectInjectablesIntoIframeHead(): Promise<void> {
+    this.AreInjectablesApplied=false;
     // Inject Readium CSS into Iframe Head
     const injectablesToLoad: Promise<boolean>[] = [];
 
@@ -1603,7 +1604,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
             addLoadingInjectable(script);
           }
         });
-        setTimeout(()=>{this.AreInjectablesApplied = true},1000) 
 
       }
     }
@@ -1613,6 +1613,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
 
     await Promise.all(injectablesToLoad);
+    this.AreInjectablesApplied = true;
+
   }
 
   /**
