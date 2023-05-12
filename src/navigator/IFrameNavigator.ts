@@ -2267,7 +2267,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     if (element && !_offset) {
       const locator = this.currentLocator()
       locator.locations = { fragment: element.id }
-      this.navigate(locator)
+      this.goTo(locator)
     }
     if (element && _offset) {
       // Store the original HTML of the element
@@ -2280,7 +2280,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       const locator = this.currentLocator()
       locator.locations = { fragment: "navSpan" }
       // Go to the new locator
-      this.navigate(locator)
+      this.goTo(locator)
       // Restore the element's original HTML 
       element.innerHTML = originalHtml
     }
