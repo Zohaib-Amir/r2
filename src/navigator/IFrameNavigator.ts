@@ -253,6 +253,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
 
   view: BookView;
   shouldShowContent: boolean;
+  AreInjectablesApplied: boolean;
 
   private readonly eventHandler: EventHandler;
   private readonly touchEventHandler: TouchEventHandler;
@@ -1590,6 +1591,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
               head.appendChild(link);
               addLoadingInjectable(link);
             }
+            //ANCHOR - SET INJECTABLE CSS APPLIED TRUE HERE
           } else if (injectable.type === "script" && injectable.url) {
             const script = IFrameNavigator.createJavascriptLink(
               injectable.url,
@@ -1599,6 +1601,8 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
             addLoadingInjectable(script);
           }
         });
+        this.AreInjectablesApplied = true;
+
       }
     }
 

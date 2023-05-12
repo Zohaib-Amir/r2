@@ -649,12 +649,11 @@ export default class D2Reader {
     if(!this.navigator) return false;
     return this.navigator.shouldShowContent;
   }
-
-  
-  getShouldShowContent() {
+  get AreInjectablesApplied() {
     if(!this.navigator) return false;
-    return this.navigator.shouldShowContent;
+    return this.navigator.AreInjectablesApplied;
   }
+
   /**
    * Settings
    */
