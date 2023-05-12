@@ -2270,7 +2270,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       this.goTo(locator)
     }
     if (element && _offset) {
-      const randomId = Math.random();
+      const randomId = Math.random() * 100;
       // Store the original HTML of the element
       const originalHtml = element.innerHTML
       // insert navigation span at offset
@@ -2279,7 +2279,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       element.innerHTML = newHtml
       // Get the current locator and set its location to the new span element
       const locator = this.currentLocator()
-      locator.locations = { fragment: "navSpan" }
+      locator.locations = { fragment: randomId.toString() }
       // Go to the new locator
       this.goTo(locator)
       // Restore the element's original HTML 
