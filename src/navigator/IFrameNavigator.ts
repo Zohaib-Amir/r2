@@ -1528,7 +1528,6 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   }
 
   private async injectInjectablesIntoIframeHead(): Promise<void> {
-    this.AreInjectablesApplied=false;
     // Inject Readium CSS into Iframe Head
     const injectablesToLoad: Promise<boolean>[] = [];
 
