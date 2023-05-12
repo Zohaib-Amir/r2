@@ -2276,7 +2276,7 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
     if (element && _offset) {
       // Store the original HTML of the element
-      const originalHtml = element.innerHTML
+      const originalHtml = element.textContent as string
       // insert navigation span at offset
       const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan">NAVIGATE TO ME</span>` + originalHtml.slice(_offset)
       // replace original html with modified verison
