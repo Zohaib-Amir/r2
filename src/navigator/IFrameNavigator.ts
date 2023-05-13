@@ -2286,11 +2286,12 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
     if (element && _offset) {
       // Store the original HTML of the element
-      const originalHtml = element.textContent as string
+      const originalHtml = element.innerHTML
+      const originalText = element.textContent as string
       // insert navigation span at offset
-      const newHtml = originalHtml.slice(0, _offset) + `<span id="navSpan">NAVIGATE TO ME</span>` + originalHtml.slice(_offset)
+      const newText = originalText.slice(0, _offset) + `<span id="navSpan">NAVIGATE TO ME</span>` + originalText.slice(_offset)
       // replace original html with modified verison
-      element.innerHTML = newHtml
+      element.innerHTML = newText
       // Get the current locator and set its location to the new span element
       const locator = this.currentLocator()
       locator.locations = { fragment: "navSpan" }
