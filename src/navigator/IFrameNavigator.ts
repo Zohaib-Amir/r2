@@ -258,6 +258,9 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
   shouldShowContent: boolean;
   AreInjectablesApplied: boolean;
   contentProcessed: boolean;
+  isIframe1Loaded: boolean;
+  isIframe2Loaded: boolean;
+  areIframesLoaded: boolean;
 
   private readonly eventHandler: EventHandler;
   private readonly touchEventHandler: TouchEventHandler;
@@ -838,7 +841,24 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
     }
   };
 
+  private setIframeLoaded(): void {
+    if (this.isIframe1Loaded && this.isIframe2Loaded) {
+      this.areIframesLoaded = true
+    }
+  }
+
   private setupEvents(): void {
+    this.iframes[0].addEventListener('load', () => {
+      // The iframe content has finished loading
+      this.isIframe1Loaded = true
+      this.setIframeLoaded()
+    });
+    this.iframes[1].addEventListener('load', () => {
+      // The iframe content has finished loading
+      this.isIframe2Loaded = true
+      this.setIframeLoaded()
+    });
+    
     for (const iframe of this.iframes) {
       addEventListenerOptional(
         iframe,

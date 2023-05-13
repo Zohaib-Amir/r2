@@ -653,6 +653,10 @@ export default class D2Reader {
     if(!this.navigator) return false;
     return this.navigator.AreInjectablesApplied;
   }
+  get AreIframesLoaded() {
+    if(!this.navigator) return false;
+    return this.navigator.areIframesLoaded;
+  }
   get isBeingStyled() {
     if(!this.navigator) return false;
     return this.navigator.isBeingStyled;
