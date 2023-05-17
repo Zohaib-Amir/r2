@@ -2301,7 +2301,25 @@ export class IFrameNavigator extends EventEmitter implements Navigator {
       element.innerHTML = originalHtml
     }
   }
-
+  addCommentIndicator = (_cssSelector: string, _offset: number, id: string) => {
+    const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
+    const element = iframe.contentWindow?.document.querySelector(_cssSelector)
+    
+    if (element) {
+      const originalText = element.textContent as string
+      // insert comment id span at offset
+      const newText = originalText.slice(0, _offset) + `<span id="${id}"/>` + originalText.slice(_offset)
+      // replace original html with modified verison
+      element.innerHTML = newText
+    }
+  }
+  removeCommentIndicator = (id: string) => {
+    const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
+    const element = iframe.contentWindow?.document.getElementById(id);
+    if(element)
+    element.remove();
+  
+   }
   goTo(locator: Locator): any {
     let locations: Locations = locator.locations ?? { progression: 0 };
     if (locator.href.indexOf("#") !== -1) {
