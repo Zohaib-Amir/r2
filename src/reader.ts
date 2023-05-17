@@ -67,6 +67,7 @@ import { TaJsonDeserialize } from "./utils/JsonUtil";
 
 import { ISelectionInfo } from "./modules/highlight/common/selection";
 import { HighlightType } from "./modules/highlight/common/highlight";
+import BookView from "./views/BookView";
 
 /**
  * A class that, once instantiated using the public `.build` method,
@@ -98,7 +99,7 @@ export default class D2Reader {
     private readonly historyModule?: HistoryModule,
     private readonly citationModule?: CitationModule
   ) {}
-
+  view: BookView;
   addEventListener(arg1?: any, arg2?: any) {
     if (!arg1 && !arg2) this.navigator.addListener(arguments[0], arguments[1]);
     if (arg1 && arg2) this.navigator.addListener(arg1, arg2);
@@ -629,7 +630,25 @@ export default class D2Reader {
       await this.searchModule?.clearSearch();
     }
   };
+  addCommentIndicator = (_cssSelector: string, _offset: number, id: string) => {
+    const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
+    const element = iframe.contentWindow?.document.querySelector(_cssSelector)
+    
+    if (element) {
+      const originalText = element.textContent as string
+      // insert comment id span at offset
+      const newText = originalText.slice(0, _offset) + `<span id="${id}"/>` + originalText.slice(_offset)
+      // replace original html with modified verison
+      element.innerHTML = newText
+    }
+  }
+ removeCommentIndicator = (id: string) => {
+  const iframe: HTMLIFrameElement = this.view.iframe as HTMLIFrameElement
+  const element = iframe.contentWindow?.document.getElementById(id);
+  if(element)
+  element.remove();
 
+ }
   /**
    * Resources
    */
