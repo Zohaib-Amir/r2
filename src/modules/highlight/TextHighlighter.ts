@@ -684,7 +684,7 @@ export class TextHighlighter {
     el.addEventListener("touchmove", this.mousemove.bind(this), { capture: true });
 
     // Add event listener for text selection on mobile
-    // el.addEventListener("select", this.handleTextSelection.bind(this));
+    el.addEventListener("select", this.handleTextSelection.bind(this), { capture: true });
 
     this.hasEventListener = true;
   }
@@ -706,8 +706,8 @@ export class TextHighlighter {
     await this.processMouseEvent(ev);
   }
 
-  async handleTextSelection(ev: Event) {
-    // await this.processMouseEvent(ev);
+  async handleTextSelection(ev: MouseEvent) {
+    await this.processMouseEvent(ev);
   }
 
   unbindEvents(el: any, _scope: any) {
