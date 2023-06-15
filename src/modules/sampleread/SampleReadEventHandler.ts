@@ -76,7 +76,7 @@ export default class SampleReadEventHandler {
           supportsPassive = true;
         },
       });
-    window.addEventListener("test", function () {}, opts);
+    window.addEventListener("test", function () { }, opts);
 
     let wheelOpt = supportsPassive ? { passive: false } : false;
 
@@ -135,8 +135,8 @@ export default class SampleReadEventHandler {
     window.addEventListener("DOMMouseScroll", MouseWheelHandler, wheelOpt);
     // window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
     window.addEventListener("keydown", preventDefaultForScrollKeys, wheelOpt);
-    window.addEventListener("touchmove", TouchMoveHandler, wheelOpt);
-    window.addEventListener("touchstart", TouchStartHandler, wheelOpt);
+    window.addEventListener("touchmove", TouchMoveHandler, { capture: true, passive: false });
+    window.addEventListener("touchstart", TouchStartHandler, { capture: true, passive: false });
 
     if (!valid) {
       this.delegate.iframes[0].blur();
