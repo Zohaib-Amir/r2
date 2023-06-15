@@ -136,6 +136,7 @@ export default class SampleReadEventHandler {
     // window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
     window.addEventListener("keydown", preventDefaultForScrollKeys, wheelOpt);
     window.addEventListener("touchmove", TouchMoveHandler, { capture: true, passive: false });
+    window.addEventListener("select", TouchMoveHandler, { capture: true, passive: false });
     window.addEventListener("touchstart", TouchStartHandler, { capture: true, passive: false });
 
     if (!valid) {
