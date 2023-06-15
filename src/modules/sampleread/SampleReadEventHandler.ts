@@ -102,7 +102,7 @@ export default class SampleReadEventHandler {
     function TouchMoveHandler(e) {
       e = e || window.event;
       let target = e.target || e.srcElement;
-
+      window.getSelection()?.removeAllRanges();
       let currentY = e.touches[0].clientY;
       if (currentY > lastY) {
         // move up
