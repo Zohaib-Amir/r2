@@ -671,9 +671,9 @@ export class TextHighlighter {
     el.addEventListener("mousedown", this.toolboxHide.bind(this));
     el.addEventListener("touchstart", this.toolboxHide.bind(this));
 
-    if (this.isAndroid()) {
-      el.addEventListener("contextmenu", this.disableContext);
-    }
+    // if (this.isAndroid()) {
+    //   el.addEventListener("contextmenu", this.disableContext);
+    // }
 
     el.addEventListener("mousedown", this.mousedown.bind(this), { capture: true });
     el.addEventListener("mouseup", this.mouseup.bind(this), { capture: true });
