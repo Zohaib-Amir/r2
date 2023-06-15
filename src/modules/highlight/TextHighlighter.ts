@@ -951,9 +951,9 @@ export class TextHighlighter {
 
   showTool = debounce(
     (b: boolean) => {
-      if (!this.isAndroid()) {
-        this.snapSelectionToWord(b);
-      }
+      // if (!this.isAndroid()) {
+      this.snapSelectionToWord(b);
+      // }
       this.toolboxShow();
     },
     navigator.userAgent.toLowerCase().indexOf("firefox") > -1 ? 200 : 100
