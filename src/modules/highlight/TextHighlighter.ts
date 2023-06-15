@@ -2427,7 +2427,7 @@ export class TextHighlighter {
 
     if (foundElement.getAttribute("data-click")) {
       if (
-        (ev.type === "mousemove" || ev.type === "touchmove") &&
+        (ev.type === "mousemove" || ev.type === "touchmove" || ev.type === "touchend") &&
         foundElement.parentElement?.style.display !== "none"
       ) {
         const foundElementHighlightAreas = Array.from(
