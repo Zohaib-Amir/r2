@@ -709,6 +709,7 @@ export class TextHighlighter {
   }
 
   async handleTextSelection(ev: MouseEvent) {
+    ev.preventDefault();
     await this.processMouseEvent(ev);
   }
 
@@ -2334,7 +2335,6 @@ export class TextHighlighter {
   };
 
   async processMouseEvent(ev: MouseEvent) {
-    ev.preventDefault();
     const doc = this.delegate.iframes[0].contentWindow?.document;
     // relative to fixed window top-left corner
     // (unlike pageX/Y which is relative to top-left rendered content area, subject to scrolling)
