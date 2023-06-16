@@ -707,16 +707,83 @@ export class TextHighlighter {
   }
 
   async handleTextSelection(ev: MouseEvent) {
-    // var e = document.createEvent('TouchEvent');
-    // e.initTouch
-
     await this.processMouseEvent(ev);
     if (this.isAndroid()) {
       const el = this.delegate.iframes[0].contentDocument?.body;
-      const e = new Event('touchmove');
-      el?.dispatchEvent(e);
+
+      // Create a touchstart event
+      const touchStartEvent = new TouchEvent('touchstart', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        touches: [
+          new Touch({
+            identifier: Date.now(),
+            target: el as HTMLElement,
+            clientX: 10, // Use the mouse event's clientX as initial touch position X
+            clientY: 10, // Use the mouse event's clientY as initial touch position Y
+          }),
+        ],
+      });
+
+      // Dispatch the touchstart event
+      el?.dispatchEvent(touchStartEvent);
+
+      // Function to simulate dragging
+      const simulateDrag = (clientX: number, clientY: number) => {
+        // Create a touchmove event
+        const touchMoveEvent = new TouchEvent('touchmove', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          touches: [
+            new Touch({
+              identifier: Date.now(),
+              target: el as HTMLElement,
+              clientX: 20, // Use the provided clientX as new touch position X
+              clientY: 20, // Use the provided clientY as new touch position Y
+            }),
+          ],
+        });
+
+        // Dispatch the touchmove event
+        el?.dispatchEvent(touchMoveEvent);
+      };
+
+      // Function to end dragging
+      const endDrag = () => {
+        // Create a touchend event
+        const touchEndEvent = new TouchEvent('touchend', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          touches: [],
+        });
+
+        // Dispatch the touchend event
+        el?.dispatchEvent(touchEndEvent);
+      };
+
+      // Listen for mousemove event to simulate dragging
+      const handleMouseMove = (event: MouseEvent) => {
+        simulateDrag(event.clientX, event.clientY);
+      };
+
+      // Listen for mouseup event to end dragging
+      const handleMouseUp = () => {
+        endDrag();
+
+        // Remove the event listeners
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      // Attach the event listeners
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     }
   }
+
 
   unbindEvents(el: any, _scope: any) {
     let doc = el.ownerDocument;
