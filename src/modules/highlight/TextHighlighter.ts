@@ -691,13 +691,11 @@ export class TextHighlighter {
     this.hasEventListener = true;
   }
   async mousedown(ev: MouseEvent) {
-    ev.preventDefault();
     lastMouseDownX = ev.clientX;
     lastMouseDownY = ev.clientY;
   }
 
   async mouseup(ev: MouseEvent) {
-    ev.preventDefault();
     if (
       Math.abs(lastMouseDownX - ev.clientX) < 3 &&
       Math.abs(lastMouseDownY - ev.clientY) < 3
@@ -707,12 +705,10 @@ export class TextHighlighter {
   }
 
   async mousemove(ev: MouseEvent) {
-    ev.preventDefault();
     await this.processMouseEvent(ev);
   }
 
   async handleTextSelection(ev: MouseEvent) {
-    ev.preventDefault();
     await this.processMouseEvent(ev);
   }
 
