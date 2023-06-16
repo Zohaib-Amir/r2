@@ -707,7 +707,15 @@ export class TextHighlighter {
   }
 
   async handleTextSelection(ev: MouseEvent) {
+    // var e = document.createEvent('TouchEvent');
+    // e.initTouch
+
     await this.processMouseEvent(ev);
+    if (this.isAndroid()) {
+      const el = this.delegate.iframes[0].contentDocument?.body;
+      const e = new Event('touchmove');
+      el?.dispatchEvent(e);
+    }
   }
 
   unbindEvents(el: any, _scope: any) {
