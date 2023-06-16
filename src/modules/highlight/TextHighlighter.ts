@@ -685,8 +685,8 @@ export class TextHighlighter {
 
     // Add event listener for text selection on mobile
     el.addEventListener("select", this.handleTextSelection.bind(this), { capture: true });
-    el.addEventListener("selectionchange", this.handleTextSelection.bind(this), { capture: true });
-    // el.addEventListener("contextMenu", this.handleTextSelection.bind(this), { capture: true });
+    // el.addEventListener("selectionchange", this.handleTextSelection.bind(this), { capture: true });
+    el.addEventListener("contextMenu", this.handleTextSelection.bind(this), { capture: true });
 
     this.hasEventListener = true;
   }
@@ -2429,7 +2429,7 @@ export class TextHighlighter {
 
     if (foundElement.getAttribute("data-click")) {
       if (
-        (ev.type === "mousemove" || ev.type === "touchmove" || ev.type === "touchend" || ev.type === "touchstart" || ev.type === "select" || ev.type === "selectionchange") &&
+        (ev.type === "mousemove" || ev.type === "touchmove" || ev.type === "touchend" || ev.type === "touchstart" || ev.type === "select" || ev.type === "contextmenu") &&
         foundElement.parentElement?.style.display !== "none"
       ) {
         const foundElementHighlightAreas = Array.from(
