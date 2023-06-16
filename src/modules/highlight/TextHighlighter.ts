@@ -709,6 +709,7 @@ export class TextHighlighter {
   }
 
   async handleTextSelection(ev: MouseEvent) {
+    this.snapSelectionToWord(true);
     await this.processMouseEvent(ev);
   }
 
