@@ -675,18 +675,13 @@ export class TextHighlighter {
       el.addEventListener("contextmenu", this.disableContext);
     }
 
-    el.addEventListener("mousedown", this.mousedown.bind(this), { capture: true });
-    el.addEventListener("mouseup", this.mouseup.bind(this), { capture: true });
-    el.addEventListener("mousemove", this.mousemove.bind(this), { capture: true });
+    el.addEventListener("mousedown", this.mousedown.bind(this));
+    el.addEventListener("mouseup", this.mouseup.bind(this));
+    el.addEventListener("mousemove", this.mousemove.bind(this));
 
-    el.addEventListener("touchstart", this.mousedown.bind(this), { capture: true });
-    el.addEventListener("touchend", this.mouseup.bind(this), { capture: true });
-    el.addEventListener("touchmove", this.mousemove.bind(this), { capture: true });
-
-    // Add event listener for text selection on mobile
-    el.addEventListener("select", this.handleTextSelection.bind(this), { capture: true });
-    // el.addEventListener("selectionchange", this.handleTextSelection.bind(this), { capture: true });
-    el.addEventListener("contextMenu", this.handleTextSelection.bind(this), { capture: true });
+    el.addEventListener("touchstart", this.mousedown.bind(this));
+    el.addEventListener("touchend", this.mouseup.bind(this));
+    el.addEventListener("touchmove", this.mousemove.bind(this));
 
     this.hasEventListener = true;
   }
@@ -705,11 +700,6 @@ export class TextHighlighter {
   }
 
   async mousemove(ev: MouseEvent) {
-    await this.processMouseEvent(ev);
-  }
-
-  async handleTextSelection(ev: MouseEvent) {
-    this.snapSelectionToWord(true);
     await this.processMouseEvent(ev);
   }
 
@@ -954,9 +944,9 @@ export class TextHighlighter {
 
   showTool = debounce(
     (b: boolean) => {
-      // if (!this.isAndroid()) {
-      this.snapSelectionToWord(b);
-      // }
+      if (!this.isAndroid()) {
+        this.snapSelectionToWord(b);
+      }
       this.toolboxShow();
     },
     navigator.userAgent.toLowerCase().indexOf("firefox") > -1 ? 200 : 100
@@ -2430,7 +2420,7 @@ export class TextHighlighter {
 
     if (foundElement.getAttribute("data-click")) {
       if (
-        (ev.type === "mousemove" || ev.type === "touchmove" || ev.type === "touchend" || ev.type === "touchstart" || ev.type === "select" || ev.type === "contextmenu") &&
+        (ev.type === "mousemove" || ev.type === "touchmove") &&
         foundElement.parentElement?.style.display !== "none"
       ) {
         const foundElementHighlightAreas = Array.from(
